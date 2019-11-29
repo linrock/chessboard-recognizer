@@ -14,7 +14,7 @@ N_EPOCHS = 15
 
 def image_data(image_path) -> tf.image:
     img = tf.io.read_file(image_path)
-    img = tf.image.decode_image(img, channels=3)
+    img = tf.image.decode_image(img, channels=1)
     img = tf.image.convert_image_dtype(img, tf.float32)
     return tf.image.resize(img, [32, 32])
 
@@ -24,7 +24,7 @@ def create_model() -> models.Sequential:
         https://www.tensorflow.org/tutorials/images/cnn
     """
     model = models.Sequential([
-        layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)),
+        layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 1)),
         layers.MaxPooling2D((2, 2)),
         layers.Conv2D(64, (3, 3), activation='relu'),
         layers.MaxPooling2D((2, 2)),

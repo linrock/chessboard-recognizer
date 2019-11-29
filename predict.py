@@ -27,7 +27,7 @@ def predict_chessboard(img_path):
         img_data = PIL.Image.fromarray((tiles[:, :, i] * 255).astype(np.uint8))
         buf = BytesIO()
         img_data.save(buf, format='PNG')
-        img_data = tf.image.decode_image(buf.getvalue(), channels=3)
+        img_data = tf.image.decode_image(buf.getvalue(), channels=1)
         img_data = tf.image.convert_image_dtype(img_data, tf.float32)
         print(predict_tile(img_data))
 
