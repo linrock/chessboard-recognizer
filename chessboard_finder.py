@@ -240,3 +240,22 @@ def detect_chessboard_corners(img_arr_gray, noise_threshold = 8000):
                 ]
     return final_corners
 
+def get_chessboard_corners(img_arr, detect_corners=True):
+    """ Returns a tuple of (corners, error_message)
+    """
+    if not detect_corners:
+        # Don't try to detect corners. Assume the entire image is a board
+        return (([0, 0, img_arr.shape[0], img_arr.shape[1]]), None)
+    corners = detect_chessboard_corners(img_arr)
+    if corners is None:
+        return (None, "Failed to find corners in chessboard image")
+    width = corners[2] - corners[0]
+    height = corners[3] - corners[1]
+    ratio = abs(1 - width / height)
+    if ratio > 0.05:
+        return (corners, "Invalid corners - chessboard size is not square")
+    if corners[0] > 1 or corners[1] > 1:
+        # TODO generalize this for chessboards positioned within images
+        return (corners, "Invalid corners - (x,y) are too far from (0,0)")
+    return (corners, None)
+

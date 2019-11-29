@@ -1,18 +1,6 @@
-# usage: tileset_generator.py [-h] input_folder output_folder
-
-# Generate tile images for alll chessboard images in input folder
-
-# positional arguments:
-#   input_folder   Input image folder
-#   output_folder  Output tile folder
-
-# optional arguments:
-#   -h, --help     show this help message and exit
-
-# Pass an input folder and output folder
-# Builds tile images for each chessboard image in input folder and puts
-# in the output folder
+# Generate tile images for all chessboard images in input folder
 # Used for building training datasets
+
 import os
 from glob import glob
 import argparse
@@ -22,7 +10,7 @@ import numpy as np
 import PIL.Image
 
 from constants import CHESSBOARDS_DIR, TILES_DIR
-from chessboard_finder import detect_chessboard_corners
+from chessboard_finder import get_chessboard_corners
 from chessboard_image import get_img_arr, get_chessboard_tiles_gray
 
 # img_filename_prefix shows which piece is on which square:
@@ -53,27 +41,8 @@ def save_tiles(tiles, img_save_dir, img_filename_prefix):
         else:
           # Possibly saving floats 0-1 needs to change fromarray settings
           PIL.Image.fromarray(
-              (tiles[:,:,i] * 255).astype(np.uint8)
+              (tiles[:, :, i] * 255).astype(np.uint8)
           ).save(tile_img_filename)
-
-def get_chessboard_corners(img_arr, detect_corners=True):
-    """ Returns a tuple of (corners, error_message)
-    """
-    if not detect_corners:
-        # Don't try to detect corners. Assume the entire image is a board
-        return (([0, 0, img_arr.shape[0], img_arr.shape[1]]), None)
-    corners = detect_chessboard_corners(img_arr)
-    if corners is None:
-        return (None, "Failed to find corners in chessboard image")
-    width = corners[2] - corners[0]
-    height = corners[3] - corners[1]
-    ratio = abs(1 - width / height)
-    if ratio > 0.05:
-        return (corners, "Invalid corners - chessboard size is not square")
-    if corners[0] > 1 or corners[1] > 1:
-        # TODO generalize this for chessboards positioned within images
-        return (corners, "Invalid corners - (x,y) are too far from (0,0)")
-    return (corners, None)
 
 def generate_tiles_from_all_chessboards():
     """ Generates 32x32 PNGs for each square of all chessboards
