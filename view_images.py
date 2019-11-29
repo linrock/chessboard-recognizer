@@ -4,7 +4,7 @@ from glob import glob
 
 from constants import CHESSBOARDS_DIR, TILES_DIR
 
-OUT_FILE = 'tiles.html'
+OUT_FILE = 'images.html'
 
 css = '''
   body {
