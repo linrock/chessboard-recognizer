@@ -4,3 +4,6 @@ venv
 .DS_Store
 __pycache__
 *.html
+model.tf
+images/chessboards
+images/tiles
