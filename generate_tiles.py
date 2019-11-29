@@ -48,7 +48,7 @@ def save_tiles(tiles, img_save_dir, img_filename_prefix):
         
         # Make resized 32x32 image from matrix and save
         if tiles.shape != (32, 32, 64):
-            PIL.Image.fromarray(tiles[:,:,i]) \
+            PIL.Image.fromarray(tiles[:, :, i]) \
                 .resize([32, 32], PIL.Image.ADAPTIVE) \
                 .save(tile_img_filename)
         else:
@@ -68,7 +68,6 @@ def generate_tileset():
 
     num_success = 0
     num_failed = 0
-    num_skipped = 0
 
     for i, img_path in enumerate(img_files):
         print("%3d/%d %s" % (i+1, len(img_files), img_path))
@@ -78,11 +77,6 @@ def generate_tileset():
 
         # Create output save directory or skip this image if it exists
         img_save_dir = '{}/{}'.format(OUT_FOLDER, img_filename_prefix)
-        
-        if os.path.exists(img_save_dir):
-            print("\tSkipping existing folder\n")
-            num_skipped += 1
-            continue
         
         # Load image
         img = PIL.Image.open(img_path)
@@ -115,8 +109,8 @@ def generate_tileset():
             num_success += 1
 
     print(
-        'Processed {} chessboard images ({} generated, {} failed, {} skipped)'.format(
-            len(img_files), num_success, num_failed, num_skipped
+        'Processed {} chessboard images ({} generated, {} failed)'.format(
+            len(img_files), num_success, num_failed
         )
     )
 
