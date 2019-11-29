@@ -44,8 +44,8 @@ def generate_random_chessboards(n, img_url_template, fen_chars='1KQRBNPkqrbnp') 
         fen_arr[fen_arr == fen_chars[0]] = '1'
 
         # Add '-' between sets of 8 to be consistent with saved file format
-        file_name_prefix = '-'.join(map(''.join, np.split(fen_arr, 8)))
-        file_path = os.path.join(OUT_FOLDER, file_name_prefix + '.png')
+        img_filename_prefix = '-'.join(map(''.join, np.split(fen_arr, 8)))
+        file_path = os.path.join(OUT_FOLDER, img_filename_prefix + '.png')
         print(file_path)
         img.save(file_path)
 
