@@ -1,0 +1,6 @@
+venv
+.mypy_cache
+.vscode
+.DS_Store
+__pycache__
+tiles.html
