@@ -72,23 +72,10 @@ def get_dataset():
 if __name__ == '__main__':
     print('Tensorflow {}'.format(tf.version.VERSION))
 
-    model = create_model()
-    checkpoint_path = 'training/model.ckpt'
-    checkpoint_dir = os.path.dirname(checkpoint_path)
-    cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-                                                     save_weights_only=True,
-                                                     verbose=1)
-    if Path('{}.index'.format(checkpoint_path)).is_file():
-        print("Found checkpoint. Loading weights")
-        model.load_weights(checkpoint_path)
-    else:
-        print("No checkpoint found. Training from scratch")
-
     (train_images, train_labels), (test_images, test_labels) = get_dataset()
-
-    history = model.fit(train_images, train_labels, epochs=10,
-                        validation_data=(test_images, test_labels),
-                        callbacks=[cp_callback])
+    model = create_model()
+    model.fit(train_images, train_labels, epochs=10,
+              validation_data=(test_images, test_labels))
 
     print("Evaluating model on test data:")
     test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
