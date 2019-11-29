@@ -75,7 +75,9 @@ def get_chessboard_corners(img_arr, detect_corners=True):
         return (corners, "Invalid corners - (x,y) are too far from (0,0)")
     return (corners, None)
 
-def generate_tileset():
+def generate_tiles_from_all_chessboards():
+    """ Generates 32x32 PNGs for each square of all chessboards
+    """
     if not os.path.exists(TILES_DIR):
         os.makedirs(TILES_DIR)
     chessboard_img_filenames = set(glob("%s/*.png" % CHESSBOARDS_DIR))
@@ -83,7 +85,7 @@ def generate_tileset():
     num_success = 0
     num_failed = 0
     for i, chessboard_img_path in enumerate(chessboard_img_filenames):
-        print("%3d/%d %s" % (i+1, num_chessboards, chessboard_img_path))
+        print("%3d/%d %s" % (i + 1, num_chessboards, chessboard_img_path))
         img_arr = get_img_arr(chessboard_img_path)
         (corners, error_message) = get_chessboard_corners(img_arr)
         if corners is not None:
@@ -112,4 +114,4 @@ def generate_tileset():
 
 if __name__ == '__main__':
     np.set_printoptions(suppress=True, precision=2)
-    generate_tileset()
+    generate_tiles_from_all_chessboards()

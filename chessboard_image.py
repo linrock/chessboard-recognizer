@@ -1,24 +1,11 @@
 import numpy as np
 import PIL.Image
 
-def _get_tiles(processed_gray_img):
-    """ Given 256x256 normalized grayscale image of a chessboard (32x32 per tile)
-        NOTE (values must be in range 0-1)
-        Return a 32x32x64 tile array
-    """
-    # stack deep 64 tiles
-    # order start from top-left to bottom right is A8, B8, ...
-    tiles = np.zeros([32, 32, 64], dtype=np.float32) # grayscale
-    for rank in range(8): # rows (numbers)
-        for file in range(8): # columns (letters)
-            tiles[:, :, (rank*8+file)] = \
-              processed_gray_img[rank*32:(rank+1)*32, file*32:(file+1)*32]
-    return tiles
-
 def _get_chessboard_gray(img_arr, corners):
     """ img_arr = a grayscale image
         corners = (x0, y0, x1, y1), where (x0, y0) is top-left corner
                                           (x1, y1) is bottom-right corner
+        Returns a 256x256 normalized grayscale image of a chessboard (32x32 per tile)
     """
     height, width = img_arr.shape
 
@@ -45,10 +32,11 @@ def get_img_arr(chessboard_img_path):
     return np.array(img, dtype=np.float32)
 
 def get_chessboard_tiles_color(img_arr, corners):
-    # img_arr is a color RGB image
-    # corners = (x0, y0, x1, y1) for top-left corner to bot-right corner of board
+    """ img_arr = a 32x32 numpy array from a color RGB image
+        corners = (x0, y0, x1, y1) for top-left corner to bot-right corner of board
+    """
     height, width, depth = img_arr.shape
-    if depth !=3:
+    if depth != 3:
         print("Need RGB color image input")
         return None
 
@@ -82,5 +70,17 @@ def get_chessboard_tiles_color(img_arr, corners):
     return tiles
 
 def get_chessboard_tiles_gray(img_arr, corners):
-    chessboard_img_resized = _get_chessboard_gray(img_arr, corners)
-    return _get_tiles(chessboard_img_resized)
+    """ Given 256x256 normalized grayscale image of a chessboard (32x32 per tile)
+        NOTE (values must be in range 0-1)
+        Return a 32x32x64 tile array
+    """
+    processed_gray_img = _get_chessboard_gray(img_arr, corners)
+    # stack deep 64 tiles
+    # order start from top-left to bottom right is A8, B8, ...
+    tiles = np.zeros([32, 32, 64], dtype=np.float32) # grayscale
+    for rank in range(8): # rows (numbers)
+        for file in range(8): # columns (letters)
+            tiles[:, :, (rank*8+file)] = \
+              processed_gray_img[rank*32:(rank+1)*32, file*32:(file+1)*32]
+    return tiles
+
