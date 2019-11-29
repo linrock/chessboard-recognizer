@@ -95,9 +95,16 @@ def generate_tileset():
             num_failed += 1
             continue
         print("\tFound corners: {}".format(corners))
+        width = corners[2] - corners[0]
+        height = corners[3] - corners[1]
+        ratio = abs(1 - width / height)
+        if ratio > 0.05:
+            print("\t!! Invalid corners - chessboard size is not square\n")
+            num_failed += 1
+            continue
         if corners[0] > 1 or corners[1] > 1:
             # TODO generalize this for chessboards positioned within images
-            print("\t!! Invalid corners\n")
+            print("\t!! Invalid corners - (x,y) are too far from (0,0)\n")
             num_failed += 1
             continue
         # Save tiles
@@ -107,8 +114,10 @@ def generate_tileset():
             save_tiles(tiles, img_save_dir, img_filename_prefix)
             num_success += 1
 
-    print("Processed %d chessboard images (%d generated, %d failures, %d skipped)" %
-      (len(img_files), num_success, num_failed, num_skipped)
+    print(
+        'Processed {} chessboard images ({} generated, {} failed, {} skipped)'.format(
+            len(img_files), num_success, num_failed, num_skipped
+        )
     )
 
 if __name__ == '__main__':
