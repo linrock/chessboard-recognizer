@@ -70,9 +70,10 @@ def get_chessboard_tiles_color(img_arr, corners):
     return tiles
 
 def get_chessboard_tiles_gray(img_arr, corners):
-    """ Given 256x256 normalized grayscale image of a chessboard (32x32 per tile)
+    """ Given an array of values representing a chessboard, first convert to
+        a 256x256 normalized grayscale image of a chessboard (32x32 per tile),
+        then return a 32x32x64 tile array
         NOTE (values must be in range 0-1)
-        Return a 32x32x64 tile array
     """
     processed_gray_img = _get_chessboard_gray(img_arr, corners)
     # stack deep 64 tiles

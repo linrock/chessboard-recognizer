@@ -7,9 +7,10 @@ from tensorflow.keras import layers, models
 import matplotlib.pyplot as plt
 import numpy as np
 
-from constants import TILES_DIR, FEN_CHARS
+from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS
 
-RATIO = 0.8 # ratio of training vs. test data
+RATIO = 0.8    # ratio of training vs. test data
+N_EPOCHS = 15
 
 def image_data(image_path) -> tf.image:
     img = tf.io.read_file(image_path)
@@ -18,7 +19,8 @@ def image_data(image_path) -> tf.image:
     return tf.image.resize(img, [32, 32])
 
 def create_model() -> models.Sequential:
-    """ Convolutional neural network for image classification. Same architecture as:
+    """ Convolutional neural network for image classification.
+        Same architecture as:
         https://www.tensorflow.org/tutorials/images/cnn
     """
     model = models.Sequential([
@@ -75,11 +77,11 @@ if __name__ == '__main__':
 
     (train_images, train_labels), (test_images, test_labels) = get_dataset()
     model = create_model()
-    model.fit(train_images, train_labels, epochs=10,
+    model.fit(train_images, train_labels, epochs=N_EPOCHS,
               validation_data=(test_images, test_labels))
 
-    print('Saving model to ./model.weights')
-    model.save_weights('./model.weights', overwrite=True, save_format=None)
+    print('Saving CNN model to {}'.format(NN_MODEL_PATH))
+    model.save_weights(NN_MODEL_PATH, overwrite=True, save_format=None)
 
-    print('Evaluating model on test data:')
+    print('Evaluating CNN model on test data:')
     test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)

@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 import PIL.Image
 
-from constants import TILES_DIR, FEN_CHARS
+from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS
 from train import image_data, create_model
 from chessboard_image import get_img_arr
 
@@ -21,7 +21,7 @@ def predict_tile(img_path):
 if __name__ == '__main__':
     print('Tensorflow {}'.format(tf.version.VERSION))
     model = create_model()
-    model.load_weights('./model.weights')
+    model.load_weights(NN_MODEL_PATH)
     tile_img_path = glob(TILES_DIR + '/*/*.png')[0]
     print(tile_img_path)
     print(predict_tile(tile_img_path))
