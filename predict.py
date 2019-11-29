@@ -15,11 +15,11 @@ from chessboard_image import get_img_arr, get_chessboard_tiles_gray
 def predict_chessboard(img_path):
     print(img_path)
     img_arr = get_img_arr(img_path)
-    (corners, error_message) = get_chessboard_corners(img_arr)
+    (corners, error) = get_chessboard_corners(img_arr, detect_corners=False)
     if corners is not None:
         print("Found corners: {}".format(corners))
-    if error_message:
-        print(error_message)
+    if error:
+        print(error)
         exit(1)
     tiles = get_chessboard_tiles_gray(img_arr, corners)
     print(tiles.shape)

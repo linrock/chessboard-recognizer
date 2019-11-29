@@ -56,11 +56,11 @@ def generate_tiles_from_all_chessboards():
     for i, chessboard_img_path in enumerate(chessboard_img_filenames):
         print("%3d/%d %s" % (i + 1, num_chessboards, chessboard_img_path))
         img_arr = get_img_arr(chessboard_img_path)
-        (corners, error_message) = get_chessboard_corners(img_arr)
+        (corners, error) = get_chessboard_corners(img_arr, detect_corners=False)
         if corners is not None:
             print("\tFound corners: {}".format(corners))
-        if error_message:
-            print("\t{}\n".format(error_message))
+        if error:
+            print("\t{}\n".format(error))
             num_failed += 1
             continue
         tiles = get_chessboard_tiles_gray(img_arr, corners)
