@@ -7,8 +7,9 @@ from tensorflow.keras import layers, models
 import matplotlib.pyplot as plt
 import numpy as np
 
-RATIO = 0.8                 # ratio of training vs. test data
-LABELS = 'RNBQKPrnbqkp1'    # 13 labels for possible square contents
+from constants import TILES_DIR, FEN_CHARS
+
+RATIO = 0.8 # ratio of training vs. test data
 
 def image_data(image_path) -> tf.image:
     img = tf.io.read_file(image_path)
@@ -28,7 +29,7 @@ def create_model() -> models.Sequential:
         layers.Conv2D(64, (3, 3), activation='relu'),
         layers.Flatten(),
         layers.Dense(64, activation='relu'),
-        layers.Dense(len(LABELS), activation='softmax'),
+        layers.Dense(len(FEN_CHARS), activation='softmax'),
     ])
     model.compile(optimizer='adam',
                   loss='sparse_categorical_crossentropy',
@@ -36,7 +37,7 @@ def create_model() -> models.Sequential:
     return model
 
 def get_dataset():
-    all_paths = np.array(glob("train_tiles/*/*.png"))
+    all_paths = np.array(glob('{}/*/*.png'.format(TILES_DIR)))
     np.random.seed(1)
     np.random.shuffle(all_paths)
 
@@ -49,9 +50,9 @@ def get_dataset():
     train_labels = []
     for image_path in train_paths:
         piece_type = image_path[-5]
-        assert(piece_type in LABELS)
+        assert(piece_type in FEN_CHARS)
         train_images.append(np.array(image_data(image_path)))
-        train_labels.append(LABELS.index(piece_type))
+        train_labels.append(FEN_CHARS.index(piece_type))
     train_images = np.array(train_images)
     train_labels = np.array(train_labels)
     print("Loaded {} training images and labels".format(len(train_paths)))
@@ -60,9 +61,9 @@ def get_dataset():
     test_labels = []
     for image_path in test_paths:
         piece_type = image_path[-5]
-        assert(piece_type in LABELS)
+        assert(piece_type in FEN_CHARS)
         test_images.append(np.array(image_data(image_path)))
-        test_labels.append(LABELS.index(piece_type))
+        test_labels.append(FEN_CHARS.index(piece_type))
     test_images = np.array(test_images)
     test_labels = np.array(test_labels)
     print("Loaded {} test images and labels".format(len(test_paths)))

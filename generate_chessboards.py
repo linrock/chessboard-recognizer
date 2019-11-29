@@ -7,24 +7,24 @@ from io import BytesIO
 import numpy as np
 import PIL.Image
 
-OUT_FOLDER = 'images/chessboards'
+from constants import CHESSBOARDS_DIR, FEN_CHARS
 
 # http://www.fen-to-image.com/image/32/rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 # http://jinchess.com/chessboard/?p=rnbqkbnrpppppppp--------------------------------PPPPPPPPRNBQKBNR
 # https://chessdiagram.online/stilldiagram.php?d=_rnbqkbnrpppppppp________________________________PPPPPPPPRNBQKBNR
 # https://chessdiagram.online/stagram.php?d=_rnbqkbnrpppppppp________________________________PPPPPPPPRNBQKBNR
 
-def generate_random_chessboards(n, img_url_template, fen_chars='1KQRBNPkqrbnp') -> None:
+def generate_random_chessboards(n, img_url_template, fen_chars=FEN_CHARS) -> None:
     """ Generates n random FEN diagrams from chess diagram template urls and
-        saves chessboard images to OUT_FOLDER.
+        saves chessboard images to CHESSBOARDS_DIR
 
         Output filenames show the pieces at squares from the top-left (a8) to the
         bottom right (h1) of the board, with rows delimited by '-'. For example:
 
         1bRqBQKq-11RBqkRP-BP1nq1b1-Q1PnkKPq-RPPkKNnr-RKp1pqPB-RRQRPPNQ-k1Ppn1qR.png
     """
-    if not os.path.exists(OUT_FOLDER):
-        os.makedirs(OUT_FOLDER)
+    if not os.path.exists(CHESSBOARDS_DIR):
+        os.makedirs(CHESSBOARDS_DIR)
 
     for i in range(n):
         fen_chars = list(fen_chars)
@@ -45,13 +45,13 @@ def generate_random_chessboards(n, img_url_template, fen_chars='1KQRBNPkqrbnp') 
 
         # Add '-' between sets of 8 to be consistent with saved file format
         img_filename_prefix = '-'.join(map(''.join, np.split(fen_arr, 8)))
-        file_path = os.path.join(OUT_FOLDER, img_filename_prefix + '.png')
+        file_path = os.path.join(CHESSBOARDS_DIR, img_filename_prefix + '.png')
         print(file_path)
         img.save(file_path)
 
 def jinchess_img_url_template():
     url_template = 'http://jinchess.com/chessboard/?p={}'
-    jinchess_board_themes = [None, 'wooden-dark', 'cold-marble', 'gray-tiles', 'green-marble', 'pale-wood', 'slate', 'wooden-dark']
+    jinchess_board_themes = [None, 'wooden-dark', 'cold-marble', 'gray-tiles', 'green-marble', 'pale-wood', 'slate']
     jinchess_piece_themes = [None, 'merida-flat', 'smart-flat', 'usual-flat', 'alpha-flat']
     theme = np.random.choice(jinchess_board_themes, 1)[0]
     if theme is not None:
@@ -65,9 +65,9 @@ def jinchess_img_url_template():
 
 for i in range(20):
     generate_random_chessboards(1, jinchess_img_url_template(), '-KQRBNPkqrbnp')
-# generateRandomBoards(100, "http://www.fen-to-image.com/image/32/{}", '1KQRBNPkqrbnp')
-# generateRandomBoards(100, "https://chessdiagram.online/stilldiagram.php?d=_{}", '_KQRBNPkqrbnp')
-# generateRandomBoards(100, "https://chessdiagram.online/stagram.php?d=_{}&s=0", '_KQRBNPkqrbnp')
-# generateRandomBoards(100, "https://chessdiagram.online/stagram.php?d=_{}&s=1", '_KQRBNPkqrbnp')
-# generateRandomBoards(100, "https://chessdiagram.online/stagram.php?d=_{}&s=2", '_KQRBNPkqrbnp')
+# generateRandomBoards(100, 'http://www.fen-to-image.com/image/32/{}')
+# generateRandomBoards(100, 'https://chessdiagram.online/stilldiagram.php?d=_{}', '_KQRBNPkqrbnp')
+# generateRandomBoards(100, 'https://chessdiagram.online/stagram.php?d=_{}&s=0', '_KQRBNPkqrbnp')
+# generateRandomBoards(100, 'https://chessdiagram.online/stagram.php?d=_{}&s=1', '_KQRBNPkqrbnp')
+# generateRandomBoards(100, 'https://chessdiagram.online/stagram.php?d=_{}&s=2', '_KQRBNPkqrbnp')
 

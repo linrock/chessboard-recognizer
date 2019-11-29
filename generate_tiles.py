@@ -21,10 +21,8 @@ import math
 import numpy as np
 import PIL.Image
 
+from constants import CHESSBOARDS_DIR, TILES_DIR
 import chessboard_finder
-
-IN_FOLDER = 'images/chessboards'
-OUT_FOLDER = 'images/tiles'
 
 # img_filename_prefix shows which piece is on which square:
 # RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
@@ -59,24 +57,23 @@ def save_tiles(tiles, img_save_dir, img_filename_prefix):
 
 def generate_tileset():
     # Create output folder as needed
-    if not os.path.exists(OUT_FOLDER):
-        os.makedirs(OUT_FOLDER)
+    if not os.path.exists(TILES_DIR):
+        os.makedirs(TILES_DIR)
 
-    # Get all image files of type png/jpg
-    img_files = set(glob("%s/*.png" % IN_FOLDER)) \
-      .union(set(glob("%s/*.jpg" % IN_FOLDER))) \
+    # Get all image files of type .png
+    img_files = set(glob("%s/*.png" % CHESSBOARDS_DIR))
 
     num_success = 0
     num_failed = 0
 
     for i, img_path in enumerate(img_files):
         print("%3d/%d %s" % (i+1, len(img_files), img_path))
-        img_filename_prefix = img_path[len(IN_FOLDER):-4]
+        img_filename_prefix = img_path[len(CHESSBOARDS_DIR):-4]
         if img_filename_prefix[0] == '/':
             img_filename_prefix = img_filename_prefix[1:]
 
         # Create output save directory or skip this image if it exists
-        img_save_dir = '{}/{}'.format(OUT_FOLDER, img_filename_prefix)
+        img_save_dir = '{}/{}'.format(TILES_DIR, img_filename_prefix)
         
         # Load image
         img = PIL.Image.open(img_path)
