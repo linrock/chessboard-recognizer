@@ -108,7 +108,7 @@ def _get_chessboard_gray(img, corners):
     # Normalized
     chessboard_img_resized = np.asarray( \
           PIL.Image.fromarray(chessboard_img) \
-          .resize([256,256], PIL.Image.BILINEAR), dtype=np.uint8) / 255.0
+          .resize([256, 256], PIL.Image.BILINEAR), dtype=np.uint8) / 255.0
     return chessboard_img_resized
 
 def find_chessboard_corners(img_arr_gray, noise_threshold = 8000):

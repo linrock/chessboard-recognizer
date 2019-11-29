@@ -5,7 +5,7 @@ from urllib import request
 from io import BytesIO
 
 import numpy as np
-from PIL import Image
+import PIL.Image
 
 OUT_FOLDER = 'images/chessboards'
 
@@ -35,7 +35,7 @@ def generate_random_chessboards(n, img_url_template, fen_chars='1KQRBNPkqrbnp') 
             fen_param = ''.join(fen_arr)
         img_url = img_url_template.format(fen_param)
         print(img_url)
-        img = Image.open(BytesIO(request.urlopen(img_url).read()))
+        img = PIL.Image.open(BytesIO(request.urlopen(img_url).read()))
         if 'chessdiagram.online' in img_url_template:
             # need to flip FEN file order since the rows are 1-8 vs 8-1 of normal FEN.
             fen_arr = np.hstack(np.split(fen_arr, 8)[::-1])
