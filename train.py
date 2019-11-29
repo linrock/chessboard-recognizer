@@ -78,5 +78,8 @@ if __name__ == '__main__':
     model.fit(train_images, train_labels, epochs=10,
               validation_data=(test_images, test_labels))
 
-    print("Evaluating model on test data:")
+    print('Saving model to ./model.weights')
+    model.save_weights('./model.weights', overwrite=True, save_format=None)
+
+    print('Evaluating model on test data:')
     test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
