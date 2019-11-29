@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from glob import glob
 from io import BytesIO
 import sys
