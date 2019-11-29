@@ -9,4 +9,4 @@ CHESSBOARDS_DIR = './images/chessboards'
 TILES_DIR = './images/tiles'
 
 # Where neural network model/weights are stored
-NN_MODEL_PATH = './nn/model'
+NN_MODEL_PATH = './nn/model.tf'

@@ -81,7 +81,7 @@ if __name__ == '__main__':
               validation_data=(test_images, test_labels))
 
     print('Saving CNN model to {}'.format(NN_MODEL_PATH))
-    model.save_weights(NN_MODEL_PATH, overwrite=True, save_format=None)
+    models.save_model(model, NN_MODEL_PATH, overwrite=True)
 
     print('Evaluating CNN model on test data:')
-    test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
+    test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=1)
