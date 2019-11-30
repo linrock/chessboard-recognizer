@@ -6,7 +6,6 @@ from pathlib import Path
 
 import tensorflow as tf
 from tensorflow.keras import layers, models
-import matplotlib.pyplot as plt
 import numpy as np
 
 from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS
