@@ -13,7 +13,7 @@ import PIL.Image
 
 from constants import CHESSBOARDS_DIR, TILES_DIR, USE_GRAYSCALE, DETECT_CORNERS
 from chessboard_finder import get_chessboard_corners
-from chessboard_image import get_img_arr, get_chessboard_tiles
+from chessboard_image import get_img_arr, get_chessboard_tiles, tile_image_data
 
 # img_filename_prefix shows which piece is on which square:
 # RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
@@ -34,12 +34,8 @@ def save_tiles(tiles, img_save_dir, img_filename_prefix):
         piece = piece_positions[math.floor(i / 8)][i % 8]
         sqr_id = '{}{}'.format(files[i % 8], 8 - math.floor(i / 8))
         tile_img_filename = '{}/{}_{}.png'.format(img_save_dir, sqr_id, piece)
-
         # Make resized 32x32 image from matrix and save
-        tile = tiles[i]
-        PIL.Image.fromarray(tile, 'RGB') \
-            .resize([32, 32], PIL.Image.ADAPTIVE) \
-            .save(tile_img_filename)
+        tile_image_data(tiles[i]).save(tile_img_filename, format='PNG')
 
 def generate_tiles_from_all_chessboards():
     """ Generates 32x32 PNGs for each square of all chessboards

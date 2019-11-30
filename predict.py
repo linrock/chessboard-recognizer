@@ -14,7 +14,7 @@ from constants import (
 )
 from train import image_data
 from chessboard_finder import get_chessboard_corners
-from chessboard_image import get_img_arr, get_chessboard_tiles
+from chessboard_image import get_img_arr, get_chessboard_tiles, tile_image_data
 
 def predict_chessboard(img_path):
     print(img_path)
@@ -30,11 +30,11 @@ def predict_chessboard(img_path):
     confidence = 1
     for i in range(8):
         for j in range(8):
-            img_data = PIL.Image.fromarray((tiles[i*8 + j][:, :] * 255).astype(np.uint8))
             buf = BytesIO()
-            img_data.save(buf, format='PNG')
+            tile_image_data(tiles[i*8 + j]).save(buf, format='PNG')
             img_data = tf.image.decode_image(buf.getvalue(), channels=3)
             img_data = tf.image.convert_image_dtype(img_data, tf.float32)
+            img_data = tf.image.resize(img_data, [32, 32])
             (fen_char, probability) = predict_tile(img_data)
             fen += fen_char
             confidence *= probability

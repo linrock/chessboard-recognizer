@@ -62,3 +62,8 @@ def get_chessboard_tiles(img_arr, corners, use_grayscale=True):
                             :,
                         ]
     return tiles
+
+def tile_image_data(tile):
+    """ Returns 32x32 tile image data from np array matrix
+    """
+    return PIL.Image.fromarray(tile, 'RGB').resize([32, 32], PIL.Image.ADAPTIVE)
