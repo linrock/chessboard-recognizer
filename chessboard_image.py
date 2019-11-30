@@ -29,67 +29,44 @@ def _get_resized_chessboard(img_arr, corners):
     img_data = PIL.Image.fromarray(chessboard_img)
     return img_data.resize([256, 256], PIL.Image.BILINEAR)
 
-def _get_chessboard_gray(img_arr, corners):
+def _get_chessboard(img_arr, corners, use_grayscale):
     """ img_arr = numpy array of RGB image data (dims: WxHx3)
         corners = (x0, y0, x1, y1), where (x0, y0) is top-left corner
                                           (x1, y1) is bottom-right corner
         Returns a 256x256x1 numpy array representing an image of a chessboard
     """
-    resized_chessboard_img_data = _get_resized_chessboard(img_arr, corners)
-    return np.asarray(
-        resized_chessboard_img_data.convert('L', (0.2989, 0.5870, 0.1140, 0)),
-        dtype=np.uint8,
-    )
-
-def _get_chessboard_color(img_arr, corners):
-    """ img_arr = numpy array of RGB image data (dims: WxHx3)
-        corners = (x0, y0, x1, y1), where (x0, y0) is top-left corner
-                                          (x1, y1) is bottom-right corner
-        Returns a 256x256x3 numpy array representing an image of a chessboard
-    """
-    resized_chessboard_img_data = _get_resized_chessboard(img_arr, corners)
-    return np.asarray(resized_chessboard_img_data, dtype=np.uint8)
+    img_data = _get_resized_chessboard(img_arr, corners)
+    if use_grayscale:
+        img_data = img_data.convert('L', (0.2989, 0.5870, 0.1140, 0))
+    return np.asarray(img_data, dtype=np.uint8)
 
 def get_img_arr(chessboard_img_path):
     img = PIL.Image.open(chessboard_img_path).convert('RGB')
     return np.array(img, dtype=np.uint8)
 
-def get_chessboard_tiles_color(img_arr, corners):
+def get_chessboard_tiles(img_arr, corners, use_grayscale=True):
     """ img_arr = a 32x32 numpy array from a color RGB image
         corners = (x0, y0, x1, y1) for top-left and bottom-right corner
+        use_grayscale = true/false for whether to return tiles in grayscale
     """
-    chessboard_256x256_img = _get_chessboard_color(img_arr, corners)
+    chessboard_256x256_img = _get_chessboard(img_arr, corners, use_grayscale)
+    # 64 tiles in order from top-left to bottom-right (A8, B8, ..., G1, H1)
     tiles = [None] * 64
     for rank in range(8): # rows/ranks (numbers)
         for file in range(8): # columns/files (letters)
-            tiles[rank*8+file] = np.zeros([32, 32, 3], dtype=np.uint8)
-            for i in range(32):
-               for j in range(32):
-                  for k in range(3):
-                      tiles[rank*8+file][i, j, k] = chessboard_256x256_img[
-                          rank*32 + i,
-                          file*32 + j,
-                          k,
-                      ]
-    return tiles
-
-def get_chessboard_tiles_gray(img_arr, corners):
-    """ Given an array of values representing a chessboard, first convert to
-        a 256x256 normalized grayscale image of a chessboard (32x32 per tile),
-        then return a 32x32x64 tile array
-    """
-    chessboard_256x256_img = _get_chessboard_gray(img_arr, corners)
-    # stack deep 64 tiles
-    # order start from top-left to bottom right is A8, B8, ...
-    tiles = [None] * 64
-    for rank in range(8): # rows/ranks (numbers)
-        for file in range(8): # columns/files (letters)
-            tiles[rank*8+file] = np.zeros([32, 32, 3], dtype=np.uint8)
+            sq_i = rank * 8 + file
+            tiles[sq_i] = np.zeros([32, 32, 3], dtype=np.uint8)
             for i in range(32):
                 for j in range(32):
-                    tiles[rank*8+file][i, j] = chessboard_256x256_img[
-                        rank*32 + i,
-                        file*32 + j,
-                    ]
+                    if use_grayscale:
+                        tiles[sq_i][i, j] = chessboard_256x256_img[
+                            rank*32 + i,
+                            file*32 + j,
+                        ]
+                    else:
+                        tiles[sq_i][i, j] = chessboard_256x256_img[
+                            rank*32 + i,
+                            file*32 + j,
+                            :,
+                        ]
     return tiles
-

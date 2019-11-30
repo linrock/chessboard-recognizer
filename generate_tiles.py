@@ -11,10 +11,9 @@ import math
 import numpy as np
 import PIL.Image
 
-from constants import CHESSBOARDS_DIR, TILES_DIR
+from constants import CHESSBOARDS_DIR, TILES_DIR, USE_GRAYSCALE
 from chessboard_finder import get_chessboard_corners
-from chessboard_image import get_img_arr, get_chessboard_tiles_color
-from chessboard_image import get_chessboard_tiles_gray
+from chessboard_image import get_img_arr, get_chessboard_tiles
 
 # img_filename_prefix shows which piece is on which square:
 # RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
@@ -61,7 +60,7 @@ def generate_tiles_from_all_chessboards():
             print("\t{}\n".format(error))
             num_failed += 1
             continue
-        tiles = get_chessboard_tiles_gray(img_arr, corners)
+        tiles = get_chessboard_tiles(img_arr, corners, use_grayscale=USE_GRAYSCALE)
         if len(tiles) != 64:
             print("\t!! Expected 64 tiles. Got {}\n".format(len(tiles)))
             num_failed += 1

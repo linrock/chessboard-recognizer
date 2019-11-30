@@ -8,5 +8,8 @@ CHESSBOARDS_DIR = './images/chessboards'
 # neural network training and testing
 TILES_DIR = './images/tiles'
 
+# Use grayscale tile PNGs
+USE_GRAYSCALE = True
+
 # Where neural network model/weights are stored
 NN_MODEL_PATH = './nn/model.tf'
