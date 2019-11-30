@@ -9,10 +9,10 @@ from tensorflow.keras import models
 import numpy as np
 import PIL.Image
 
-from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS
+from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS, USE_GRAYSCALE
 from train import image_data
 from chessboard_finder import get_chessboard_corners
-from chessboard_image import get_img_arr, get_chessboard_tiles_gray
+from chessboard_image import get_img_arr, get_chessboard_tiles
 
 def predict_chessboard(img_path):
     print(img_path)
@@ -23,15 +23,24 @@ def predict_chessboard(img_path):
     if error:
         print(error)
         exit(1)
-    tiles = get_chessboard_tiles_gray(img_arr, corners)
-    print(tiles.shape)
-    for i in range(64):
-        img_data = PIL.Image.fromarray((tiles[:, :, i] * 255).astype(np.uint8))
-        buf = BytesIO()
-        img_data.save(buf, format='PNG')
-        img_data = tf.image.decode_image(buf.getvalue(), channels=1)
-        img_data = tf.image.convert_image_dtype(img_data, tf.float32)
-        print(predict_tile(img_data))
+    tiles = get_chessboard_tiles(img_arr, corners, use_grayscale=USE_GRAYSCALE)
+    fen = ''
+    confidence = 1
+    for i in range(8):
+        for j in range(8):
+            img_data = PIL.Image.fromarray((tiles[i*8 + j][:, :] * 255).astype(np.uint8))
+            buf = BytesIO()
+            img_data.save(buf, format='PNG')
+            img_data = tf.image.decode_image(buf.getvalue(), channels=3)
+            img_data = tf.image.convert_image_dtype(img_data, tf.float32)
+            (fen_char, probability) = predict_tile(img_data)
+            fen += fen_char
+            confidence *= probability
+            print((fen_char, probability))
+        if i < 7:
+            fen += '/'
+    print(fen)
+    print(confidence)
 
 def predict_tiles(img_data_arr):
     print(model.predict(img_data_arr, verbose=1))

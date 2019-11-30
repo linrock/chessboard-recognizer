@@ -41,7 +41,7 @@ def get_chessboard_tiles(img_arr, corners, use_grayscale=True):
     img_data = _get_resized_chessboard(img_arr, corners)
     if use_grayscale:
         img_data = img_data.convert('L', (0.2989, 0.5870, 0.1140, 0))
-    chessboard_256x256x_img =  np.asarray(img_data, dtype=np.uint8)
+    chessboard_256x256_img = np.asarray(img_data, dtype=np.uint8)
     # 64 tiles in order from top-left to bottom-right (A8, B8, ..., G1, H1)
     tiles = [None] * 64
     for rank in range(8): # rows/ranks (numbers)
