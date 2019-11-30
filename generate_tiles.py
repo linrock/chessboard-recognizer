@@ -15,30 +15,33 @@ from constants import CHESSBOARDS_DIR, TILES_DIR, USE_GRAYSCALE, DETECT_CORNERS
 from chessboard_finder import get_chessboard_corners
 from chessboard_image import get_img_arr, get_chessboard_tiles
 
-# img_filename_prefix shows which piece is on which square:
-# RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
-
-def save_tiles(tiles, img_save_dir, img_filename_prefix):
+def save_tiles(tiles, chessboard_img_path):
     """ Saves all 64 tiles as 32x32 PNG files with this naming convention:
 
         a1_R.png (white rook on a1)
         d8_q.png (black queen on d8)
         c4_1.png (nothing on c4)
     """
+    img_filename_prefix = chessboard_img_path[len(CHESSBOARDS_DIR):-4]
+    # img_filename_prefix shows which piece is on which square:
+    # RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
+    if img_filename_prefix[0] == '/':
+        img_filename_prefix = img_filename_prefix[1:]
+    img_save_dir = '{}/{}'.format(TILES_DIR, img_filename_prefix)
+    print("\tSaving tiles to {}\n".format(img_save_dir))
     if not os.path.exists(img_save_dir):
         os.makedirs(img_save_dir)
-
     piece_positions = img_filename_prefix.split('-')
     files = 'abcdefgh'
     for i in range(64):
         piece = piece_positions[math.floor(i / 8)][i % 8]
         sqr_id = '{}{}'.format(files[i % 8], 8 - math.floor(i / 8))
         tile_img_filename = '{}/{}_{}.png'.format(img_save_dir, sqr_id, piece)
-        # Make resized 32x32 image from matrix and save
         tiles[i].save(tile_img_filename, format='PNG')
 
 def generate_tiles_from_all_chessboards():
     """ Generates 32x32 PNGs for each square of all chessboards
+        in CHESSBOARDS_DIR
     """
     if not os.path.exists(TILES_DIR):
         os.makedirs(TILES_DIR)
@@ -61,12 +64,7 @@ def generate_tiles_from_all_chessboards():
             print("\t!! Expected 64 tiles. Got {}\n".format(len(tiles)))
             num_failed += 1
             continue
-        img_filename_prefix = chessboard_img_path[len(CHESSBOARDS_DIR):-4]
-        if img_filename_prefix[0] == '/':
-            img_filename_prefix = img_filename_prefix[1:]
-        img_save_dir = '{}/{}'.format(TILES_DIR, img_filename_prefix)
-        print("\tSaving tiles to {}\n".format(img_save_dir))
-        save_tiles(tiles, img_save_dir, img_filename_prefix)
+        save_tiles(tiles, chessboard_img_path)
         num_success += 1
     print(
         'Processed {} chessboard images ({} generated, {} failed)'.format(
