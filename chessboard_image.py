@@ -29,17 +29,6 @@ def _get_resized_chessboard(img_arr, corners):
     img_data = PIL.Image.fromarray(chessboard_img)
     return img_data.resize([256, 256], PIL.Image.BILINEAR)
 
-def _get_chessboard(img_arr, corners, use_grayscale):
-    """ img_arr = numpy array of RGB image data (dims: WxHx3)
-        corners = (x0, y0, x1, y1), where (x0, y0) is top-left corner
-                                          (x1, y1) is bottom-right corner
-        Returns a 256x256x1 numpy array representing an image of a chessboard
-    """
-    img_data = _get_resized_chessboard(img_arr, corners)
-    if use_grayscale:
-        img_data = img_data.convert('L', (0.2989, 0.5870, 0.1140, 0))
-    return np.asarray(img_data, dtype=np.uint8)
-
 def get_img_arr(chessboard_img_path):
     img = PIL.Image.open(chessboard_img_path).convert('RGB')
     return np.array(img, dtype=np.uint8)
@@ -49,7 +38,10 @@ def get_chessboard_tiles(img_arr, corners, use_grayscale=True):
         corners = (x0, y0, x1, y1) for top-left and bottom-right corner
         use_grayscale = true/false for whether to return tiles in grayscale
     """
-    chessboard_256x256_img = _get_chessboard(img_arr, corners, use_grayscale)
+    img_data = _get_resized_chessboard(img_arr, corners)
+    if use_grayscale:
+        img_data = img_data.convert('L', (0.2989, 0.5870, 0.1140, 0))
+    chessboard_256x256x_img =  np.asarray(img_data, dtype=np.uint8)
     # 64 tiles in order from top-left to bottom-right (A8, B8, ..., G1, H1)
     tiles = [None] * 64
     for rank in range(8): # rows/ranks (numbers)
