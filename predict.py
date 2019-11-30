@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 
+import sys
 from glob import glob
 from io import BytesIO
-import sys
 from functools import reduce
 
 import tensorflow as tf
 from tensorflow.keras import models
 import numpy as np
-import PIL.Image
 
 from constants import (
     TILES_DIR, NN_MODEL_PATH, FEN_CHARS, USE_GRAYSCALE, DETECT_CORNERS
 )
 from train import image_data
 from chessboard_finder import get_chessboard_corners
-from chessboard_image import get_img_arr, get_chessboard_tiles, tile_image_data
+from chessboard_image import get_img_arr, get_chessboard_tiles
 
 def _chessboard_tiles_img_data(chessboard_img_path):
     img_arr = get_img_arr(chessboard_img_path)
@@ -32,7 +31,7 @@ def _chessboard_tiles_img_data(chessboard_img_path):
     img_data_list = []
     for i in range(64):
         buf = BytesIO()
-        tile_image_data(tiles[i]).save(buf, format='PNG')
+        tiles[i].save(buf, format='PNG')
         img_data = tf.image.decode_image(buf.getvalue(), channels=3)
         img_data = tf.image.convert_image_dtype(img_data, tf.float32)
         img_data = tf.image.resize(img_data, [32, 32])
@@ -40,6 +39,7 @@ def _chessboard_tiles_img_data(chessboard_img_path):
     return img_data_list
 
 def predict_chessboard(chessboard_img_path):
+    print("Predicting chessboard")
     print(chessboard_img_path)
     img_data_list = _chessboard_tiles_img_data(chessboard_img_path)
     predictions = []

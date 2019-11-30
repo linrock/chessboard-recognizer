@@ -40,6 +40,9 @@ def create_model() -> models.Sequential:
     return model
 
 def get_dataset():
+    """ Prepares training and test datasets from all PNG tiles
+        in TILES_DIR
+    """
     all_paths = np.array(glob('{}/*/*.png'.format(TILES_DIR)))
     np.random.seed(1)
     np.random.shuffle(all_paths)
