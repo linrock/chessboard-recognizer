@@ -13,7 +13,8 @@ import PIL.Image
 
 from constants import CHESSBOARDS_DIR, TILES_DIR
 from chessboard_finder import get_chessboard_corners
-from chessboard_image import get_img_arr, get_chessboard_tiles_gray
+from chessboard_image import get_img_arr, get_chessboard_tiles_color
+from chessboard_image import get_chessboard_tiles_gray
 
 # img_filename_prefix shows which piece is on which square:
 # RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
@@ -34,24 +35,19 @@ def save_tiles(tiles, img_save_dir, img_filename_prefix):
         piece = piece_positions[math.floor(i / 8)][i % 8]
         sqr_id = '{}{}'.format(files[i % 8], 8 - math.floor(i / 8))
         tile_img_filename = '{}/{}_{}.png'.format(img_save_dir, sqr_id, piece)
-        
+
         # Make resized 32x32 image from matrix and save
-        if tiles.shape != (32, 32, 64):
-            PIL.Image.fromarray(tiles[:, :, i]) \
-                .resize([32, 32], PIL.Image.ADAPTIVE) \
-                .save(tile_img_filename)
-        else:
-          # Possibly saving floats 0-1 needs to change fromarray settings
-          PIL.Image.fromarray(
-              (tiles[:, :, i] * 255).astype(np.uint8)
-          ).save(tile_img_filename)
+        tile = tiles[i]
+        PIL.Image.fromarray(tile, 'RGB') \
+            .resize([32, 32], PIL.Image.ADAPTIVE) \
+            .save(tile_img_filename)
 
 def generate_tiles_from_all_chessboards():
     """ Generates 32x32 PNGs for each square of all chessboards
     """
     if not os.path.exists(TILES_DIR):
         os.makedirs(TILES_DIR)
-    chessboard_img_filenames = set(glob("%s/*.png" % CHESSBOARDS_DIR))
+    chessboard_img_filenames = glob("%s/*.png" % CHESSBOARDS_DIR)
     num_chessboards = len(chessboard_img_filenames)
     num_success = 0
     num_failed = 0
@@ -66,8 +62,8 @@ def generate_tiles_from_all_chessboards():
             num_failed += 1
             continue
         tiles = get_chessboard_tiles_gray(img_arr, corners)
-        if tiles.shape != (32, 32, 64):
-            print("\t!! Expected 64 tiles. Got {}\n".format(tiles.shape[2]))
+        if len(tiles) != 64:
+            print("\t!! Expected 64 tiles. Got {}\n".format(len(tiles)))
             num_failed += 1
             continue
         img_filename_prefix = chessboard_img_path[len(CHESSBOARDS_DIR):-4]
