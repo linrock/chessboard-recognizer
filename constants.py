@@ -4,6 +4,9 @@ FEN_CHARS = '1RNBQKPrnbqkp'
 # Base directory for auto-generated chessboard images
 CHESSBOARDS_DIR = './images/chessboards'
 
+# Try to detect the corners of a chessboard in the image
+DETECT_CORNERS = False
+
 # Base directory for 32x32 PNG chessboard squares for
 # neural network training and testing
 TILES_DIR = './images/tiles'

@@ -63,11 +63,11 @@ def jinchess_img_url_template():
         url_template += '&gs'
     return url_template
 
-for i in range(20):
+for i in range(140):
     generate_random_chessboards(1, jinchess_img_url_template(), '-KQRBNPkqrbnp')
-# generateRandomBoards(100, 'http://www.fen-to-image.com/image/32/{}')
-# generateRandomBoards(100, 'https://chessdiagram.online/stilldiagram.php?d=_{}', '_KQRBNPkqrbnp')
-# generateRandomBoards(100, 'https://chessdiagram.online/stagram.php?d=_{}&s=0', '_KQRBNPkqrbnp')
-# generateRandomBoards(100, 'https://chessdiagram.online/stagram.php?d=_{}&s=1', '_KQRBNPkqrbnp')
-# generateRandomBoards(100, 'https://chessdiagram.online/stagram.php?d=_{}&s=2', '_KQRBNPkqrbnp')
+generate_random_chessboards(20, 'http://www.fen-to-image.com/image/32/{}')
+generate_random_chessboards(20, 'https://chessdiagram.online/stilldiagram.php?d=_{}&q=', '_KQRBNPkqrbnp')
+generate_random_chessboards(20, 'https://chessdiagram.online/stagram.php?d=_{}&s=0&q=', '_KQRBNPkqrbnp')
+generate_random_chessboards(20, 'https://chessdiagram.online/stagram.php?d=_{}&s=1&q=', '_KQRBNPkqrbnp')
+generate_random_chessboards(20, 'https://chessdiagram.online/stagram.php?d=_{}&s=2&q=', '_KQRBNPkqrbnp')
 

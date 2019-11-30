@@ -9,7 +9,9 @@ from tensorflow.keras import models
 import numpy as np
 import PIL.Image
 
-from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS, USE_GRAYSCALE
+from constants import (
+    TILES_DIR, NN_MODEL_PATH, FEN_CHARS, USE_GRAYSCALE, DETECT_CORNERS
+)
 from train import image_data
 from chessboard_finder import get_chessboard_corners
 from chessboard_image import get_img_arr, get_chessboard_tiles
@@ -17,7 +19,7 @@ from chessboard_image import get_img_arr, get_chessboard_tiles
 def predict_chessboard(img_path):
     print(img_path)
     img_arr = get_img_arr(img_path)
-    (corners, error) = get_chessboard_corners(img_arr, detect_corners=False)
+    (corners, error) = get_chessboard_corners(img_arr, detect_corners=DETECT_CORNERS)
     if corners is not None:
         print("Found corners: {}".format(corners))
     if error:

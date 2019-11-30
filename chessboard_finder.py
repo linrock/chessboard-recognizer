@@ -240,7 +240,7 @@ def detect_chessboard_corners(img_arr_gray, noise_threshold = 8000):
                 ]
     return final_corners
 
-def get_chessboard_corners(img_arr, detect_corners=True):
+def get_chessboard_corners(img_arr, detect_corners=False):
     """ Returns a tuple of (corners, error_message)
     """
     if not detect_corners:
