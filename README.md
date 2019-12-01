@@ -1,11 +1,11 @@
 # Chessboard recognizer
 
-Uses a convolutional neural network to recognize the position of pieces
+Uses a convolutional neural network to recognize the positions of pieces
 on a chessboard image.
 
 If you have an image of a chessboard in `chessboard.png`
 
-<img src="https://user-images.githubusercontent.com/208617/69907303-d526b400-13a0-11ea-982f-47dc7cacecdc.png" width=320 />
+<img src="https://user-images.githubusercontent.com/208617/69907303-d526b400-13a0-11ea-982f-47dc7cacecdc.png" width=300 />
 
 Run the program like this
 
@@ -17,23 +17,34 @@ To get the chessboard position in [FEN](https://en.wikipedia.org/wiki/Forsyth%E2
 
 ## Getting started
 
-Training and using the neural network requires [Tensorflow 2](https://www.tensorflow.org/)
-With python3 installed, set up your virtualenv and install python dependencies
+You'll need python 3 and [Tensorflow 2](https://www.tensorflow.org/)
+
+Set up your virtualenv and install python dependencies
 ```
 virtualenv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-To download a bunch of images with pieces randomly placed on chessboards:
-`./generate_chessboards.py`
+You'll need a neural network model to use `./recognize.py`
 
-To convert these downloaded chessboard images into 32x32 PNGs used for training:
-`./generate_tiles.py`
+To use a pre-trained model, download [nn-model.zip](https://github.com/linrock/chessboard-recognizer/releases/download/v0.1/nn-model.zip) and unzip in `./nn/`
 
-To view generated chessboards and tiles
-`./view_images.py`
+To train your own model, you'll need lots of images of chess pieces
+
+You can download [training-images.zip](https://github.com/linrock/chessboard-recognizer/releases/download/v0.1/training-images.zip) and unzip in `./images/` for the images used for the pre-trained model.
+
+Or you can generate your own training images with these scripts:
+
+* `./generate_chessboards.py` downloads a bunch of chessboard images with randomly-placed pieces
+* `./generate_tiles.py` converts these downloaded chessboard images into 32x32 PNGs used for training
+* `./view_images.py` for a convenient way to manually verify the generated images
+
+Once you have a neural network model ready, run `./recognize.py` with a path to a chessboard image:
+
+`./recognize.py ~/Desktop/chessboard.png`
 
 # Acknowledgements
 
-* https://github.com/Elucidation/tensorflow_chessbot
+* Original inspiration from [tensorflow_chessbot](https://github.com/Elucidation/tensorflow_chessbot) by [Elucidation](https://github.com/Elucidation)
+* Neural network architecture from https://www.tensorflow.org/tutorials/images/cnn
