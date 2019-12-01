@@ -48,6 +48,7 @@ def predict_chessboard(chessboard_img_path):
         # a8, b8 ... g1, h1
         tile_img_data = img_data_list[i]
         (fen_char, probability) = predict_tile(tile_img_data)
+        print((fen_char, probability))
         predictions.append((fen_char, probability))
     fen = '/'.join(
         [''.join(r) for r in np.reshape([p[0] for p in predictions], [8, 8])]
@@ -61,14 +62,7 @@ def predict_tile(tile_img_data):
 
         Returns a tuple of (predicted FEN char, confidence)
     """
-    probabilities = list(
-        model.predict(
-            np.array([tile_img_data]),
-            verbose=1,
-            workers=3,
-            use_multiprocessing=True
-        )[0]
-    )
+    probabilities = list(model.predict(np.array([tile_img_data]))[0])
     max_probability = max(probabilities)
     i = probabilities.index(max_probability)
     return (FEN_CHARS[i], max_probability)
