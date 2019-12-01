@@ -14,6 +14,7 @@ from constants import CHESSBOARDS_DIR, FEN_CHARS
 # https://chessdiagram.online/stilldiagram.php?d=_rnbqkbnrpppppppp________________________________PPPPPPPPRNBQKBNR
 # https://chessdiagram.online/stagram.php?d=_rnbqkbnrpppppppp________________________________PPPPPPPPRNBQKBNR
 
+
 def generate_random_chessboards(n, img_url_template, fen_chars=FEN_CHARS) -> None:
     """ Generates n random FEN diagrams from chess diagram template urls and
         saves chessboard images to CHESSBOARDS_DIR
@@ -25,49 +26,77 @@ def generate_random_chessboards(n, img_url_template, fen_chars=FEN_CHARS) -> Non
     """
     if not os.path.exists(CHESSBOARDS_DIR):
         os.makedirs(CHESSBOARDS_DIR)
-
+    output_dir = os.path.join(CHESSBOARDS_DIR, "generated")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     for i in range(n):
         fen_chars = list(fen_chars)
         fen_arr = np.random.choice(fen_chars, 64)
-        if 'fen-to-image.com' in img_url_template:
-            fen_param = '/'.join(map(''.join, np.split(fen_arr, 8)))
+        if "fen-to-image.com" in img_url_template:
+            fen_param = "/".join(map("".join, np.split(fen_arr, 8)))
         else:
-            fen_param = ''.join(fen_arr)
+            fen_param = "".join(fen_arr)
         img_url = img_url_template.format(fen_param)
         print(img_url)
         img = PIL.Image.open(BytesIO(request.urlopen(img_url).read()))
-        if 'chessdiagram.online' in img_url_template:
+        if "chessdiagram.online" in img_url_template:
             # need to flip FEN file order since the rows are 1-8 vs 8-1 of normal FEN.
             fen_arr = np.hstack(np.split(fen_arr, 8)[::-1])
 
         # Replace - or _ with 1 to be consistent with actual FEN notation
-        fen_arr[fen_arr == fen_chars[0]] = '1'
+        fen_arr[fen_arr == fen_chars[0]] = "1"
 
         # Add '-' between sets of 8 to be consistent with saved file format
-        img_filename_prefix = '-'.join(map(''.join, np.split(fen_arr, 8)))
-        file_path = os.path.join(CHESSBOARDS_DIR, img_filename_prefix + '.png')
+        img_filename_prefix = "-".join(map("".join, np.split(fen_arr, 8)))
+        file_path = os.path.join(output_dir, img_filename_prefix + ".png")
         print(file_path)
         img.save(file_path)
 
+
 def jinchess_img_url_template():
-    url_template = 'http://jinchess.com/chessboard/?p={}'
-    jinchess_board_themes = [None, 'wooden-dark', 'cold-marble', 'gray-tiles', 'green-marble', 'pale-wood', 'slate']
-    jinchess_piece_themes = [None, 'merida-flat', 'smart-flat', 'usual-flat', 'alpha-flat']
+    url_template = "http://jinchess.com/chessboard/?p={}"
+    jinchess_board_themes = [
+        None,
+        "cold-marble",
+        "gray-tiles",
+        "green-marble",
+        "pale-wood",
+        "red-marble",
+        "slate",
+        "winter",
+        "wooden-dark",
+    ]
+    jinchess_piece_themes = [
+        None,
+        "merida-flat",
+        "smart-flat",
+        "usual-flat",
+        "alpha-flat",
+    ]
     theme = np.random.choice(jinchess_board_themes, 1)[0]
     if theme is not None:
-        url_template += '&bp={}'.format(theme)
+        url_template += "&bp={}".format(theme)
     pieces = np.random.choice(jinchess_piece_themes, 1)[0]
     if pieces is not None:
-        url_template += '&ps={}'.format(pieces)
+        url_template += "&ps={}".format(pieces)
     if np.random.choice(2, 1)[0] == 1:
-        url_template += '&gs'
+        url_template += "&gs"
     return url_template
 
-for i in range(140):
-    generate_random_chessboards(1, jinchess_img_url_template(), '-KQRBNPkqrbnp')
-generate_random_chessboards(20, 'http://www.fen-to-image.com/image/32/{}')
-generate_random_chessboards(20, 'https://chessdiagram.online/stilldiagram.php?d=_{}&q=', '_KQRBNPkqrbnp')
-generate_random_chessboards(20, 'https://chessdiagram.online/stagram.php?d=_{}&s=0&q=', '_KQRBNPkqrbnp')
-generate_random_chessboards(20, 'https://chessdiagram.online/stagram.php?d=_{}&s=1&q=', '_KQRBNPkqrbnp')
-generate_random_chessboards(20, 'https://chessdiagram.online/stagram.php?d=_{}&s=2&q=', '_KQRBNPkqrbnp')
+
+for i in range(200):
+    generate_random_chessboards(1, jinchess_img_url_template(), "-KQRBNPkqrbnp")
+generate_random_chessboards(10, "http://www.fen-to-image.com/image/32/{}")
+generate_random_chessboards(
+    10, "https://chessdiagram.online/stilldiagram.php?d=_{}&q=", "_KQRBNPkqrbnp"
+)
+generate_random_chessboards(
+    10, "https://chessdiagram.online/stagram.php?d=_{}&s=0&q=", "_KQRBNPkqrbnp"
+)
+generate_random_chessboards(
+    10, "https://chessdiagram.online/stagram.php?d=_{}&s=1&q=", "_KQRBNPkqrbnp"
+)
+generate_random_chessboards(
+    10, "https://chessdiagram.online/stagram.php?d=_{}&s=2&q=", "_KQRBNPkqrbnp"
+)
 

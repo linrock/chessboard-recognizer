@@ -43,7 +43,7 @@ def get_dataset():
     """ Prepares training and test datasets from all PNG tiles
         in TILES_DIR
     """
-    all_paths = np.array(glob('{}/*/*.png'.format(TILES_DIR)))
+    all_paths = np.array(glob('{}/*/*/*.png'.format(TILES_DIR)))
     np.random.seed(1)
     np.random.shuffle(all_paths)
 
@@ -80,6 +80,9 @@ if __name__ == '__main__':
     print('Tensorflow {}'.format(tf.version.VERSION))
 
     (train_images, train_labels), (test_images, test_labels) = get_dataset()
+    if not len(train_images):
+        print("No training images found!")
+        exit(1)
     model = create_model()
     model.fit(train_images, train_labels, epochs=N_EPOCHS,
               validation_data=(test_images, test_labels))

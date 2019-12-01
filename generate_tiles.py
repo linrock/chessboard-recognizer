@@ -22,12 +22,14 @@ def save_tiles(tiles, chessboard_img_path):
         d8_q.png (black queen on d8)
         c4_1.png (nothing on c4)
     """
-    img_filename_prefix = chessboard_img_path[len(CHESSBOARDS_DIR):-4]
+    img_dir = chessboard_img_path.split("/")[3]
+    output_dir = os.path.join(TILES_DIR, img_dir)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    img_filename_prefix = chessboard_img_path.split("/")[4][:-4]
     # img_filename_prefix shows which piece is on which square:
     # RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
-    if img_filename_prefix[0] == '/':
-        img_filename_prefix = img_filename_prefix[1:]
-    img_save_dir = '{}/{}'.format(TILES_DIR, img_filename_prefix)
+    img_save_dir = os.path.join(output_dir, img_filename_prefix)
     print("\tSaving tiles to {}\n".format(img_save_dir))
     if not os.path.exists(img_save_dir):
         os.makedirs(img_save_dir)
@@ -45,7 +47,7 @@ def generate_tiles_from_all_chessboards():
     """
     if not os.path.exists(TILES_DIR):
         os.makedirs(TILES_DIR)
-    chessboard_img_filenames = glob("%s/*.png" % CHESSBOARDS_DIR)
+    chessboard_img_filenames = glob("{}/*/*.png".format(CHESSBOARDS_DIR))
     num_chessboards = len(chessboard_img_filenames)
     num_success = 0
     num_failed = 0

@@ -18,16 +18,19 @@ css = '''
 '''
 
 if __name__ == '__main__':
-    print('Found {} tile images'.format(len(glob(TILES_DIR + '/*/*.png'))))
-    tile_dirs = glob(TILES_DIR + '/*')
+    print('Found {} tile images'.format(len(glob(TILES_DIR + '/*/*/*.png'))))
+    tile_dirs = glob(TILES_DIR + '/*/*')
     with open(OUT_FILE, 'w') as f:
         f.write('<html lang="en">')
         f.write('<style>{}</style>'.format(css))
         for tile_dir in tile_dirs:
-            prefix = tile_dir.replace(TILES_DIR + '/', '')
-            chessboard_img_path = '{}/{}.png'.format(CHESSBOARDS_DIR, prefix)
+            img_dir = tile_dir.split('/')[-2]
+            img_filename_prefix = tile_dir.split('/')[-1]
+            chessboard_img_path = '{}/{}/{}.png'.format(
+                CHESSBOARDS_DIR, img_dir, img_filename_prefix
+            )
             f.write('<h3>{}</h3>'.format(chessboard_img_path))
-            f.write('<img src="{}"/>'.format(chessboard_img_path))
+            f.write('<img src="{}" width="256"/>'.format(chessboard_img_path))
             f.write('<h3>{}</h3>'.format(tile_dir))
             square_map = {}
             for tile_img_path in sorted(glob('{}/*.png'.format(tile_dir))):
