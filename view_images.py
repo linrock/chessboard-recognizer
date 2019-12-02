@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 from glob import glob
 
 from constants import CHESSBOARDS_DIR, TILES_DIR
@@ -18,22 +19,23 @@ css = '''
 '''
 
 if __name__ == '__main__':
-    print('Found {} tile images'.format(len(glob(TILES_DIR + '/*/*/*.png'))))
-    tile_dirs = glob(TILES_DIR + '/*/*')
+    tiles_base_dir = os.path.join(TILES_DIR, '*', '*')
+    print('Found {} tile images'.format(len(glob(os.path.join(tiles_base_dir, '*.png')))))
+    tile_dirs = glob(tiles_base_dir)
     with open(OUT_FILE, 'w') as f:
         f.write('<html lang="en">')
         f.write('<style>{}</style>'.format(css))
         for tile_dir in tile_dirs:
             img_dir = tile_dir.split('/')[-2]
             img_filename_prefix = tile_dir.split('/')[-1]
-            chessboard_img_path = '{}/{}/{}.png'.format(
-                CHESSBOARDS_DIR, img_dir, img_filename_prefix
+            chessboard_img_path = os.path.join(
+                CHESSBOARDS_DIR, img_dir, '{}.png'.format(img_filename_prefix)
             )
             f.write('<h3>{}</h3>'.format(chessboard_img_path))
             f.write('<img src="{}" width="256"/>'.format(chessboard_img_path))
             f.write('<h3>{}</h3>'.format(tile_dir))
             square_map = {}
-            for tile_img_path in sorted(glob('{}/*.png'.format(tile_dir))):
+            for tile_img_path in glob(os.path.join(tile_dir, '*.png')):
                 square_id = tile_img_path[-8:-6]
                 fen_char = tile_img_path[-5]
                 square_map[square_id] = {
