@@ -4,6 +4,8 @@ import sys
 from glob import glob
 from io import BytesIO
 from functools import reduce
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import tensorflow as tf
 from tensorflow.keras import models
@@ -16,13 +18,16 @@ from train import image_data
 from chessboard_finder import get_chessboard_corners
 from chessboard_image import get_img_arr, get_chessboard_tiles
 
-def _chessboard_tiles_img_data(chessboard_img_path):
+def _chessboard_tiles_img_data(chessboard_img_path, options={}):
+    """ Given a file path to a chessboard PNG image, returns a
+        size-64 array of 32x32 tiles representing each square of a chessboard
+    """
     img_arr = get_img_arr(chessboard_img_path)
     (corners, error) = get_chessboard_corners(
         img_arr,
         detect_corners=DETECT_CORNERS
     )
-    if corners is not None:
+    if corners is not None and not options.quiet:
         print("Found corners: {}".format(corners))
     if error:
         print(error)
@@ -38,23 +43,28 @@ def _chessboard_tiles_img_data(chessboard_img_path):
         img_data_list.append(img_data)
     return img_data_list
 
-def predict_chessboard(chessboard_img_path):
-    print("Predicting chessboard")
-    print(chessboard_img_path)
-    img_data_list = _chessboard_tiles_img_data(chessboard_img_path)
+def predict_chessboard(chessboard_img_path, options={}):
+    """ Given a file path to a chessboard PNG image, returns a
+        string containing a FEN representation of the chessboard
+    """
+    if not options.quiet:
+        print("Predicting chessboard {}".format(chessboard_img_path))
+    img_data_list = _chessboard_tiles_img_data(chessboard_img_path, options)
     predictions = []
     confidence = 1
     for i in range(64):
         # a8, b8 ... g1, h1
         tile_img_data = img_data_list[i]
         (fen_char, probability) = predict_tile(tile_img_data)
-        print((fen_char, probability))
+        if not options.quiet:
+            print((fen_char, probability))
         predictions.append((fen_char, probability))
     fen = '/'.join(
         [''.join(r) for r in np.reshape([p[0] for p in predictions], [8, 8])]
     )
-    print(fen)
-    print(reduce(lambda x,y: x*y, [p[1] for p in predictions]))
+    if not options.quiet:
+        print(reduce(lambda x,y: x*y, [p[1] for p in predictions]))
+    return fen
 
 def predict_tile(tile_img_data):
     """ Given the image data of a tile, try to determine what piece
@@ -68,10 +78,20 @@ def predict_tile(tile_img_data):
     return (FEN_CHARS[i], max_probability)
 
 if __name__ == '__main__':
-    print('Tensorflow {}'.format(tf.version.VERSION))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-q", "--quiet", help="Only print recognized FEN position",
+                        action="store_true")
+    # parser.add_argument("-d", "--debug", help="Saves debug output to output.html",
+    #                     action="store_true")
+    parser.add_argument("image_path", help="Path to PNG chessboard image")
+    args = parser.parse_args()
+    if not args.quiet:
+        print('Tensorflow {}'.format(tf.version.VERSION))
     model = models.load_model(NN_MODEL_PATH)
     # tile_img_path = glob(TILES_DIR + '/*/*.png')[0]
     # print(tile_img_path)
     # print(predict_tile(image_data(tile_img_path)))
     if len(sys.argv) > 1:
-        predict_chessboard(sys.argv[1])
+        print(predict_chessboard(args.image_path, args))
+
