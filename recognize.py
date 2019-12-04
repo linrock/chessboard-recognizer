@@ -64,6 +64,7 @@ def predict_chessboard(chessboard_img_path, options={}):
     )
     if not options.quiet:
         print(reduce(lambda x,y: x*y, [p[1] for p in predictions]))
+        print("https://lichess.org/editor/{}".format(fen))
     return fen
 
 def predict_tile(tile_img_data):
