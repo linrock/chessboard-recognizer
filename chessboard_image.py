@@ -1,49 +1,20 @@
 import numpy as np
 import PIL.Image
 
-def _get_resized_chessboard(img_arr, corners):
-    """ img_arr = numpy array of RGB image data (dims: WxHx3)
-        corners = (x0, y0, x1, y1), where (x0, y0) is top-left corner
-                                          (x1, y1) is bottom-right corner
-
+def _get_resized_chessboard(chessboard_img_path):
+    """ chessboard_img_path = path to a chessboard image
         Returns a 256x256 image of a chessboard (32x32 per tile)
     """
-    height, width, depth = img_arr.shape
-    assert depth == 3, "Need RGB color image input"
-
-    # corners could be outside image bounds, pad image as needed
-    padl_x = max(0, -corners[0])
-    padl_y = max(0, -corners[1])
-    padr_x = max(0, corners[2] - width)
-    padr_y = max(0, corners[3] - height)
-
-    img_padded = np.pad(
-        img_arr,
-        ((padl_y, padr_y), (padl_x, padr_x), (0, 0)),
-        mode='edge'
-    )
-    chessboard_img = img_padded[
-        (padl_y + corners[1]):(padl_y + corners[3]),
-        (padl_x + corners[0]):(padl_x + corners[2]),
-        :
-    ]
-    img_data = PIL.Image.fromarray(chessboard_img)
+    img_data = PIL.Image.open(chessboard_img_path).convert('RGB')
     return img_data.resize([256, 256], PIL.Image.BILINEAR)
 
-def get_img_arr(chessboard_img_path):
-    """ Given a path to an image, convert it to a numpy array of values
-    """
-    img = PIL.Image.open(chessboard_img_path).convert('RGB')
-    return np.array(img, dtype=np.uint8)
-
-def get_chessboard_tiles(img_arr, corners, use_grayscale=True):
-    """ img_arr = a 32x32 numpy array representing values of an RGB image
-        corners = (x0, y0, x1, y1) for top-left and bottom-right corner
+def get_chessboard_tiles(chessboard_img_path, use_grayscale=True):
+    """ chessboard_img_path = path to a chessboard image
         use_grayscale = true/false for whether to return tiles in grayscale
 
         Returns a list (length 64) of 32x32 image data
     """
-    img_data = _get_resized_chessboard(img_arr, corners)
+    img_data = _get_resized_chessboard(chessboard_img_path)
     if use_grayscale:
         img_data = img_data.convert('L', (0.2989, 0.5870, 0.1140, 0))
     chessboard_256x256_img = np.asarray(img_data, dtype=np.uint8)

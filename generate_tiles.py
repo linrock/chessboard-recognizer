@@ -11,9 +11,8 @@ import math
 import numpy as np
 import PIL.Image
 
-from constants import CHESSBOARDS_DIR, TILES_DIR, USE_GRAYSCALE, DETECT_CORNERS
-from chessboard_finder import get_chessboard_corners
-from chessboard_image import get_img_arr, get_chessboard_tiles
+from constants import CHESSBOARDS_DIR, TILES_DIR, USE_GRAYSCALE
+from chessboard_image import get_chessboard_tiles
 
 def save_tiles(tiles, chessboard_img_path):
     """ Saves all 64 tiles as 32x32 PNG files with this naming convention:
@@ -53,15 +52,7 @@ def generate_tiles_from_all_chessboards():
     num_failed = 0
     for i, chessboard_img_path in enumerate(chessboard_img_filenames):
         print("%3d/%d %s" % (i + 1, num_chessboards, chessboard_img_path))
-        img_arr = get_img_arr(chessboard_img_path)
-        (corners, error) = get_chessboard_corners(img_arr, detect_corners=DETECT_CORNERS)
-        if DETECT_CORNERS and corners is not None:
-            print("\tFound corners: {}".format(corners))
-        if error:
-            print("\t{}\n".format(error))
-            num_failed += 1
-            continue
-        tiles = get_chessboard_tiles(img_arr, corners, use_grayscale=USE_GRAYSCALE)
+        tiles = get_chessboard_tiles(chessboard_img_path, use_grayscale=USE_GRAYSCALE)
         if len(tiles) != 64:
             print("\t!! Expected 64 tiles. Got {}\n".format(len(tiles)))
             num_failed += 1

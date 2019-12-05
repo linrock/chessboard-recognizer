@@ -17,23 +17,13 @@ from constants import (
 from utils import compressed_fen
 from train import image_data
 from chessboard_finder import get_chessboard_corners
-from chessboard_image import get_img_arr, get_chessboard_tiles
+from chessboard_image import get_chessboard_tiles
 
 def _chessboard_tiles_img_data(chessboard_img_path, options={}):
     """ Given a file path to a chessboard PNG image, returns a
         size-64 array of 32x32 tiles representing each square of a chessboard
     """
-    img_arr = get_img_arr(chessboard_img_path)
-    (corners, error) = get_chessboard_corners(
-        img_arr,
-        detect_corners=DETECT_CORNERS
-    )
-    if corners is not None and not options.quiet:
-        print("Found corners: {}".format(corners))
-    if error:
-        print(error)
-        exit(1)
-    tiles = get_chessboard_tiles(img_arr, corners, use_grayscale=USE_GRAYSCALE)
+    tiles = get_chessboard_tiles(chessboard_img_path, use_grayscale=USE_GRAYSCALE)
     img_data_list = []
     for i in range(64):
         buf = BytesIO()
@@ -48,7 +38,7 @@ def _save_output_html(chessboard_img_path, predicted_fen, confidence):
     fen = compressed_fen(predicted_fen)
     with open("debug.html", "a") as f:
         f.write('<h3>{}</h3>'.format(chessboard_img_path))
-        f.write('<img src="{}" width="256"/>'.format(chessboard_img_path))
+        f.write('<img src="{}" width="256" height="256"/>'.format(chessboard_img_path))
         f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin-left: 15px"/>'.format(fen))
         f.write('<br />')
         f.write('<a href="https://lichess.org/editor/{}">{}</a>'.format(fen, fen))
