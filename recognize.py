@@ -46,7 +46,7 @@ def _chessboard_tiles_img_data(chessboard_img_path, options={}):
 
 def _save_output_html(chessboard_img_path, predicted_fen, confidence):
     fen = compressed_fen(predicted_fen)
-    with open("prediction.html", "a") as f:
+    with open("debug.html", "a") as f:
         f.write('<h3>{}</h3>'.format(chessboard_img_path))
         f.write('<img src="{}" width="256"/>'.format(chessboard_img_path))
         f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin-left: 15px"/>'.format(fen))
@@ -78,9 +78,10 @@ def predict_chessboard(chessboard_img_path, options={}):
     if not options.quiet:
         confidence = reduce(lambda x,y: x*y, [p[1] for p in predictions])
         print("Confidence: {}".format(confidence))
+    if options.debug:
         print("https://lichess.org/editor/{}".format(predicted_fen))
         _save_output_html(chessboard_img_path, predicted_fen, confidence)
-        print("Prediction for {} saved to prediction.html".format(chessboard_img_path))
+        print("Saved {} prediction to debug.html".format(chessboard_img_path))
     return predicted_fen
 
 def predict_tile(tile_img_data):
@@ -99,8 +100,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-q", "--quiet", help="Only print recognized FEN position",
                         action="store_true")
-    # parser.add_argument("-d", "--debug", help="Saves debug output to output.html",
-    #                     action="store_true")
+    parser.add_argument("-d", "--debug", help="Saves debug output to debug.html",
+                        action="store_true")
     parser.add_argument("image_path", help="Path/glob to PNG chessboard image(s)")
     args = parser.parse_args()
     if not args.quiet:
