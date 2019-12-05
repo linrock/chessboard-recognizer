@@ -10,7 +10,7 @@ import numpy as np
 
 from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS
 
-RATIO = 0.8    # ratio of training vs. test data
+RATIO = 0.85    # ratio of training vs. test data
 N_EPOCHS = 15
 
 def image_data(image_path) -> tf.image:
