@@ -78,10 +78,10 @@ def predict_chessboard(chessboard_img_path, options={}):
     if not options.quiet:
         confidence = reduce(lambda x,y: x*y, [p[1] for p in predictions])
         print("Confidence: {}".format(confidence))
-    if options.debug:
-        print("https://lichess.org/editor/{}".format(predicted_fen))
-        _save_output_html(chessboard_img_path, predicted_fen, confidence)
-        print("Saved {} prediction to debug.html".format(chessboard_img_path))
+    # if options.debug:
+    print("https://lichess.org/editor/{}".format(predicted_fen))
+    _save_output_html(chessboard_img_path, predicted_fen, confidence)
+    print("Saved {} prediction to debug.html".format(chessboard_img_path))
     return predicted_fen
 
 def predict_tile(tile_img_data):
