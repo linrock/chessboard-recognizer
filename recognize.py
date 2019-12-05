@@ -44,16 +44,17 @@ def _chessboard_tiles_img_data(chessboard_img_path, options={}):
         img_data_list.append(img_data)
     return img_data_list
 
-def _save_output_html(chessboard_img_path, predicted_fen):
+def _save_output_html(chessboard_img_path, predicted_fen, confidence):
     fen = compressed_fen(predicted_fen)
-    with open("prediction.html", "w") as f:
-        f.write('<html lang="en">')
+    with open("prediction.html", "a") as f:
         f.write('<h3>{}</h3>'.format(chessboard_img_path))
         f.write('<img src="{}" width="256"/>'.format(chessboard_img_path))
-        f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256"/>'.format(fen))
+        f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin-left: 15px"/>'.format(fen))
         f.write('<br />')
         f.write('<a href="https://lichess.org/editor/{}">{}</a>'.format(fen, fen))
-        f.write('</html>')
+        f.write('<div>{}</div>'.format(confidence))
+        f.write('<br />')
+        f.write('<br />')
 
 def predict_chessboard(chessboard_img_path, options={}):
     """ Given a file path to a chessboard PNG image,
@@ -75,10 +76,11 @@ def predict_chessboard(chessboard_img_path, options={}):
         [''.join(r) for r in np.reshape([p[0] for p in predictions], [8, 8])]
     )
     if not options.quiet:
-        print(reduce(lambda x,y: x*y, [p[1] for p in predictions]))
+        confidence = reduce(lambda x,y: x*y, [p[1] for p in predictions])
+        print("Confidence: {}".format(confidence))
         print("https://lichess.org/editor/{}".format(predicted_fen))
-        _save_output_html(chessboard_img_path, predicted_fen)
-        print("Prediction saved to prediction.html")
+        _save_output_html(chessboard_img_path, predicted_fen, confidence)
+        print("Prediction for {} saved to prediction.html".format(chessboard_img_path))
     return predicted_fen
 
 def predict_tile(tile_img_data):
@@ -99,7 +101,7 @@ if __name__ == '__main__':
                         action="store_true")
     # parser.add_argument("-d", "--debug", help="Saves debug output to output.html",
     #                     action="store_true")
-    parser.add_argument("image_path", help="Path to PNG chessboard image")
+    parser.add_argument("image_path", help="Path/glob to PNG chessboard image(s)")
     args = parser.parse_args()
     if not args.quiet:
         print('Tensorflow {}'.format(tf.version.VERSION))
@@ -108,5 +110,6 @@ if __name__ == '__main__':
     # print(tile_img_path)
     # print(predict_tile(image_data(tile_img_path)))
     if len(sys.argv) > 1:
-        print(predict_chessboard(args.image_path, args))
+        for chessboard_image_path in sorted(glob(args.image_path)):
+            print(predict_chessboard(chessboard_image_path, args))
 
