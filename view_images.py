@@ -17,10 +17,14 @@ css = '''
     display: inline-block;
     width: 20px;
   }
+
+  .empty {
+    opacity: 0.2;
+  }
 '''
 
 if __name__ == '__main__':
-    sub_dir = sys.argv[1] if sys.argv[1] else '*'
+    sub_dir = sys.argv[1] if len(sys.argv) > 1 else '*'
     tiles_base_dir = os.path.join(TILES_DIR, sub_dir, '*')
     print('Looking for tile images in {}'.format(tiles_base_dir))
     print('Found {} tile images'.format(len(glob(os.path.join(tiles_base_dir, '*.png')))))
@@ -48,8 +52,12 @@ if __name__ == '__main__':
             for rank in [8,7,6,5,4,3,2,1]:
                 for file in ['a','b','c','d','e','f','g','h']:
                     square_id = '{}{}'.format(file, rank)
+                    fen_char = square_map[square_id]['fen_char']
                     f.write('<img src="{}"/>'.format(square_map[square_id]['img_src']))
-                    f.write('<span class="fen-char">{}</span>'.format(square_map[square_id]['fen_char']))
+                    f.write('<span class="fen-char {}">{}</span>'.format(
+                        'empty' if fen_char is '1' else '',
+                        fen_char
+                    ))
                 f.write('<br>')
             f.write('<br>')
         f.write('</html>')
