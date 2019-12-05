@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import os
 from glob import glob
 
@@ -19,7 +20,9 @@ css = '''
 '''
 
 if __name__ == '__main__':
-    tiles_base_dir = os.path.join(TILES_DIR, '*', '*')
+    sub_dir = sys.argv[1] if sys.argv[1] else '*'
+    tiles_base_dir = os.path.join(TILES_DIR, sub_dir, '*')
+    print('Looking for tile images in {}'.format(tiles_base_dir))
     print('Found {} tile images'.format(len(glob(os.path.join(tiles_base_dir, '*.png')))))
     tile_dirs = glob(tiles_base_dir)
     with open(OUT_FILE, 'w') as f:
