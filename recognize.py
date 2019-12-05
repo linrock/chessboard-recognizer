@@ -14,6 +14,7 @@ import numpy as np
 from constants import (
     TILES_DIR, NN_MODEL_PATH, FEN_CHARS, USE_GRAYSCALE, DETECT_CORNERS
 )
+from utils import compressed_fen
 from train import image_data
 from chessboard_finder import get_chessboard_corners
 from chessboard_image import get_img_arr, get_chessboard_tiles
@@ -43,9 +44,20 @@ def _chessboard_tiles_img_data(chessboard_img_path, options={}):
         img_data_list.append(img_data)
     return img_data_list
 
+def _save_output_html(chessboard_img_path, predicted_fen):
+    fen = compressed_fen(predicted_fen)
+    with open("prediction.html", "w") as f:
+        f.write('<html lang="en">')
+        f.write('<h3>{}</h3>'.format(chessboard_img_path))
+        f.write('<img src="{}" width="256"/>'.format(chessboard_img_path))
+        f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256"/>'.format(fen))
+        f.write('<br />')
+        f.write('<a href="https://lichess.org/editor/{}">{}</a>'.format(fen, fen))
+        f.write('</html>')
+
 def predict_chessboard(chessboard_img_path, options={}):
-    """ Given a file path to a chessboard PNG image, returns a
-        string containing a FEN representation of the chessboard
+    """ Given a file path to a chessboard PNG image,
+        Returns a FEN string representation of the chessboard
     """
     if not options.quiet:
         print("Predicting chessboard {}".format(chessboard_img_path))
@@ -59,13 +71,15 @@ def predict_chessboard(chessboard_img_path, options={}):
         if not options.quiet:
             print((fen_char, probability))
         predictions.append((fen_char, probability))
-    fen = '/'.join(
+    predicted_fen = '/'.join(
         [''.join(r) for r in np.reshape([p[0] for p in predictions], [8, 8])]
     )
     if not options.quiet:
         print(reduce(lambda x,y: x*y, [p[1] for p in predictions]))
-        print("https://lichess.org/editor/{}".format(fen))
-    return fen
+        print("https://lichess.org/editor/{}".format(predicted_fen))
+        _save_output_html(chessboard_img_path, predicted_fen)
+        print("Prediction saved to prediction.html")
+    return predicted_fen
 
 def predict_tile(tile_img_data):
     """ Given the image data of a tile, try to determine what piece

@@ -5,6 +5,8 @@ import re
 import shutil
 import os
 
+from utils import uncompressed_fen
+
 """ Given a chessboard image with a known FEN, save it as
     an image used for training the neural net
 """
@@ -15,9 +17,7 @@ if __name__ == '__main__':
 
     filename_prefix = correct_fen.split(' ')[0]
     filename_prefix = filename_prefix.replace('/', '-')
-    for digit in re.findall(r'[2-8]', filename_prefix):
-        filename_prefix = filename_prefix.replace(digit, int(digit) * '1')
-    new_file_name = "{}.png".format(filename_prefix)
+    new_file_name = "{}.png".format(uncompressed_fen(filename_prefix))
     new_file_path = os.path.join(
         "images", "chessboards", folder_prefix, new_file_name
     )
