@@ -8,14 +8,15 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 import numpy as np
 
-from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS
+from constants import TILES_DIR, NN_MODEL_PATH, FEN_CHARS, USE_GRAYSCALE
 
 RATIO = 0.82    # ratio of training vs. test data
 N_EPOCHS = 20
 
 def image_data(image_path) -> tf.image:
+    n_channels = 1 if USE_GRAYSCALE else 3
     img = tf.io.read_file(image_path)
-    img = tf.image.decode_image(img, channels=3)
+    img = tf.image.decode_image(img, channels=n_channels)
     img = tf.image.convert_image_dtype(img, tf.float32)
     return tf.image.resize(img, [32, 32])
 
@@ -24,8 +25,9 @@ def create_model() -> models.Sequential:
         Same architecture as:
         https://www.tensorflow.org/tutorials/images/cnn
     """
+    input_shape = (32, 32, 1) if USE_GRAYSCALE else (32, 32, 3)
     model = models.Sequential([
-        layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)),
+        layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape),
         layers.MaxPooling2D((2, 2)),
         layers.Conv2D(64, (3, 3), activation='relu'),
         layers.MaxPooling2D((2, 2)),

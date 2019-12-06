@@ -23,12 +23,13 @@ def _chessboard_tiles_img_data(chessboard_img_path, options={}):
     """ Given a file path to a chessboard PNG image, returns a
         size-64 array of 32x32 tiles representing each square of a chessboard
     """
+    n_channels = 1 if USE_GRAYSCALE else 3
     tiles = get_chessboard_tiles(chessboard_img_path, use_grayscale=USE_GRAYSCALE)
     img_data_list = []
     for i in range(64):
         buf = BytesIO()
         tiles[i].save(buf, format='PNG')
-        img_data = tf.image.decode_image(buf.getvalue(), channels=3)
+        img_data = tf.image.decode_image(buf.getvalue(), channels=n_channels)
         img_data = tf.image.convert_image_dtype(img_data, tf.float32)
         img_data = tf.image.resize(img_data, [32, 32])
         img_data_list.append(img_data)
