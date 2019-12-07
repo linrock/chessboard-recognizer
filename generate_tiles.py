@@ -16,8 +16,14 @@ from chessboard_image import get_chessboard_tiles
 
 OVERWRITE = False
 
+def _img_filename_prefix(chessboard_img_path):
+    """ part of the image filename that shows which piece is on which square:
+        RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
+    """
+    return chessboard_img_path.split("/")[4][:-4]
+
 def _img_sub_dir(chessboard_img_path):
-    """ The sub-directory where the chessboard tiles will be saved
+    """ The sub-directory where the chessboard tile images will be saved
     """
     sub_dir = chessboard_img_path.split("/")[3]
     return os.path.join(TILES_DIR, sub_dir)
@@ -26,10 +32,12 @@ def _img_save_dir(chessboard_img_path):
     """ The directory within the sub-directory that will contain the
         tile images
     """
-    img_filename_prefix = chessboard_img_path.split("/")[4][:-4]
-    return os.path.join(_img_sub_dir(chessboard_img_path), img_filename_prefix)
+    return os.path.join(
+        _img_sub_dir(chessboard_img_path),
+        _img_filename_prefix(chessboard_img_path),
+    )
 
-def save_tiles(tiles, chessboard_img_path, overwrite=OVERWRITE):
+def save_tiles(tiles, chessboard_img_path):
     """ Saves all 64 tiles as 32x32 PNG files with this naming convention:
 
         a1_R.png (white rook on a1)
@@ -39,17 +47,11 @@ def save_tiles(tiles, chessboard_img_path, overwrite=OVERWRITE):
     sub_dir = _img_sub_dir(chessboard_img_path)
     if not os.path.exists(sub_dir):
         os.makedirs(sub_dir)
-    img_filename_prefix = chessboard_img_path.split("/")[4][:-4]
-    # img_filename_prefix shows which piece is on which square:
-    # RRqpBnNr-QKPkrQPK-PpbQnNB1-nRRBpNpk-Nqprrpqp-kKKbNBPP-kQnrpkrn-BKRqbbBp
     img_save_dir = _img_save_dir(chessboard_img_path)
     print("\tSaving tiles to {}\n".format(img_save_dir))
-    if os.path.exists(img_save_dir) and not overwrite:
-        print("\tIgnoring existing {}\n".format(img_save_dir))
-        return
     if not os.path.exists(img_save_dir):
         os.makedirs(img_save_dir)
-    piece_positions = img_filename_prefix.split('-')
+    piece_positions = _img_filename_prefix(chessboard_img_path).split('-')
     files = 'abcdefgh'
     for i in range(64):
         piece = piece_positions[math.floor(i / 8)][i % 8]
