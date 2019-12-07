@@ -35,27 +35,34 @@ def _chessboard_tiles_img_data(chessboard_img_path, options={}):
         img_data_list.append(img_data)
     return img_data_list
 
+def _confidence_color(confidence):
+    if confidence > 0.95:
+        return "green"
+    elif confidence > 0.8:
+        return "orange"
+    else:
+        return red
+
 def _save_output_html(chessboard_img_path, predicted_fen, predictions, confidence):
     fen = compressed_fen(predicted_fen)
+    confidence_color = _confidence_color(confidence)
     with open("debug.html", "a") as f:
         f.write('<h3>{}</h3>'.format(chessboard_img_path))
+        f.write('<div style="display: flex">')
         f.write('<img src="{}" width="256" height="256"/>'.format(chessboard_img_path))
         f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin: 0 15px"/>'.format(fen))
-        f.write('<div style="display: inline-block">')
+        f.write('<div>')
         for i in range(8):
             f.write('<div>')
             for j in range(8):
-                f.write('<span style="display: inline-block; height: 32px; line-height: 32px; margin-right: 6px">{}</span>'.format(format(predictions[i*8 + j], '.3f')))
+                c = predictions[i*8 + j]
+                f.write('<span style="display: inline-block; height: 32px; line-height: 32px; margin-right: 6px; color: {}">{}</span>'.format(_confidence_color(c), format(c, '.3f')))
             f.write('</div>')
+        f.write('</div>')
         f.write('</div>')
         f.write('<br />')
         f.write('<a href="https://lichess.org/editor/{}" target="_blank">{}</a>'.format(fen, fen))
-        if confidence > 0.95:
-            f.write('<div style="color: green">{}</div>'.format(confidence))
-        elif confidence > 0.8:
-            f.write('<div style="color: orange">{}</div>'.format(confidence))
-        else:
-            f.write('<div style="color: red">{}</div>'.format(confidence))
+        f.write('<div style="color: {}">{}</div>'.format(confidence_color, confidence))
         f.write('<br />')
         f.write('<br />')
 
