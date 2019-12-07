@@ -1,0 +1,34 @@
+body {
+  font-family: sans-serif;
+}
+
+.fen-char {
+  display: inline-block;
+  width: 20px;
+}
+
+.empty {
+  opacity: 0.2;
+}
+
+.boards-row {
+  display: flex;
+}
+
+.boards-row img {
+  width: 256px;
+  height: 256px;
+  margin-right: 15px;
+}
+
+.predictions-matrix {
+  font-size: 14px;
+}
+
+.prediction {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  margin-right: 8px;
+}

@@ -8,21 +8,6 @@ from constants import CHESSBOARDS_DIR, TILES_DIR
 
 OUT_FILE = 'images.html'
 
-css = '''
-  body {
-    font-family: sans-serif;
-  }
-
-  .fen-char {
-    display: inline-block;
-    width: 20px;
-  }
-
-  .empty {
-    opacity: 0.2;
-  }
-'''
-
 if __name__ == '__main__':
     sub_dir = sys.argv[1] if len(sys.argv) > 1 else '*'
     tiles_base_dir = os.path.join(TILES_DIR, sub_dir, '*')
@@ -31,7 +16,7 @@ if __name__ == '__main__':
     tile_dirs = glob(tiles_base_dir)
     with open(OUT_FILE, 'w') as f:
         f.write('<html lang="en">')
-        f.write('<style>{}</style>'.format(css))
+        f.write('<link rel="stylesheet" href="./web/style.css" />')
         for tile_dir in tile_dirs:
             img_dir = tile_dir.split('/')[-2]
             img_filename_prefix = tile_dir.split('/')[-1]

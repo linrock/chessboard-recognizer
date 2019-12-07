@@ -41,26 +41,31 @@ def _confidence_color(confidence):
     elif confidence > 0.8:
         return "orange"
     else:
-        return red
+        return "red"
 
 def _save_output_html(chessboard_img_path, fen, predictions, confidence):
     confidence_color = _confidence_color(confidence)
     with open("debug.html", "a") as f:
         f.write('<h3>{}</h3>'.format(chessboard_img_path))
-        f.write('<div style="display: flex">')
-        f.write('<img src="{}" width="256" height="256"/>'.format(chessboard_img_path))
-        f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin: 0 15px"/>'.format(fen))
-        f.write('<div>')
+        f.write('<div class="boards-row">')
+        f.write('<img src="{}" />'.format(chessboard_img_path))
+        f.write('<img src="http://www.fen-to-image.com/image/32/{}"/>'.format(fen))
+        f.write('<div class="predictions-matrix">')
         for i in range(8):
-            f.write('<div style="font-size: 14px">')
+            f.write('<div>')
             for j in range(8):
                 c = predictions[i*8 + j]
-                f.write('<div style="display: inline-block; width: 32px; height: 32px; line-height: 32px; margin-right: 6px; color: {}">{}</div>'.format(_confidence_color(c), format(c, '.3f')))
+                f.write('<div class="prediction" style="color: {}">{}</div>'.format(
+                    _confidence_color(c),
+                    format(c, '.3f')
+                ))
             f.write('</div>')
         f.write('</div>')
         f.write('</div>')
         f.write('<br />')
-        f.write('<a href="https://lichess.org/editor/{}" target="_blank">{}</a>'.format(fen, fen))
+        f.write('<a href="https://lichess.org/editor/{}" target="_blank">{}</a>'.format(
+            fen, fen
+        ))
         f.write('<div style="color: {}">{}</div>'.format(confidence_color, confidence))
         f.write('<br />')
         f.write('<br />')
@@ -122,6 +127,8 @@ if __name__ == '__main__':
     # print(tile_img_path)
     # print(predict_tile(image_data(tile_img_path)))
     if len(sys.argv) > 1:
+        with open("debug.html", "w") as f:
+            f.write('<link rel="stylesheet" href="./web/style.css" />')
         for chessboard_image_path in sorted(glob(args.image_path)):
             print(predict_chessboard(chessboard_image_path, args))
 
