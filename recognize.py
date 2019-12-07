@@ -43,8 +43,7 @@ def _confidence_color(confidence):
     else:
         return red
 
-def _save_output_html(chessboard_img_path, predicted_fen, predictions, confidence):
-    fen = compressed_fen(predicted_fen)
+def _save_output_html(chessboard_img_path, fen, predictions, confidence):
     confidence_color = _confidence_color(confidence)
     with open("debug.html", "a") as f:
         f.write('<h3>{}</h3>'.format(chessboard_img_path))
@@ -53,10 +52,10 @@ def _save_output_html(chessboard_img_path, predicted_fen, predictions, confidenc
         f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin: 0 15px"/>'.format(fen))
         f.write('<div>')
         for i in range(8):
-            f.write('<div>')
+            f.write('<div style="font-size: 14px">')
             for j in range(8):
                 c = predictions[i*8 + j]
-                f.write('<span style="display: inline-block; height: 32px; line-height: 32px; margin-right: 6px; color: {}">{}</span>'.format(_confidence_color(c), format(c, '.3f')))
+                f.write('<div style="display: inline-block; width: 32px; height: 32px; line-height: 32px; margin-right: 6px; color: {}">{}</div>'.format(_confidence_color(c), format(c, '.3f')))
             f.write('</div>')
         f.write('</div>')
         f.write('</div>')
@@ -82,8 +81,10 @@ def predict_chessboard(chessboard_img_path, options={}):
         if not options.quiet:
             print((fen_char, probability))
         predictions.append((fen_char, probability))
-    predicted_fen = '/'.join(
-        [''.join(r) for r in np.reshape([p[0] for p in predictions], [8, 8])]
+    predicted_fen = compressed_fen(
+        '/'.join(
+            [''.join(r) for r in np.reshape([p[0] for p in predictions], [8, 8])]
+        )
     )
     if not options.quiet:
         confidence = reduce(lambda x,y: x*y, [p[1] for p in predictions])
