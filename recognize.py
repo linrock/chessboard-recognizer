@@ -43,7 +43,12 @@ def _save_output_html(chessboard_img_path, predicted_fen, confidence):
         f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin-left: 15px"/>'.format(fen))
         f.write('<br />')
         f.write('<a href="https://lichess.org/editor/{}">{}</a>'.format(fen, fen))
-        f.write('<div>{}</div>'.format(confidence))
+        if confidence > 0.95:
+            f.write('<div style="color: green">{}</div>'.format(confidence))
+        elif confidence > 0.8:
+            f.write('<div style="color: orange">{}</div>'.format(confidence))
+        else:
+            f.write('<div style="color: red">{}</div>'.format(confidence))
         f.write('<br />')
         f.write('<br />')
 
