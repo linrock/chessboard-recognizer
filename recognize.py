@@ -35,14 +35,21 @@ def _chessboard_tiles_img_data(chessboard_img_path, options={}):
         img_data_list.append(img_data)
     return img_data_list
 
-def _save_output_html(chessboard_img_path, predicted_fen, confidence):
+def _save_output_html(chessboard_img_path, predicted_fen, predictions, confidence):
     fen = compressed_fen(predicted_fen)
     with open("debug.html", "a") as f:
         f.write('<h3>{}</h3>'.format(chessboard_img_path))
         f.write('<img src="{}" width="256" height="256"/>'.format(chessboard_img_path))
-        f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin-left: 15px"/>'.format(fen))
+        f.write('<img src="http://www.fen-to-image.com/image/32/{}" width="256" style="margin: 0 15px"/>'.format(fen))
+        f.write('<div style="display: inline-block">')
+        for i in range(8):
+            f.write('<div>')
+            for j in range(8):
+                f.write('<span style="display: inline-block; height: 32px; line-height: 32px; margin-right: 6px">{}</span>'.format(format(predictions[i*8 + j], '.3f')))
+            f.write('</div>')
+        f.write('</div>')
         f.write('<br />')
-        f.write('<a href="https://lichess.org/editor/{}">{}</a>'.format(fen, fen))
+        f.write('<a href="https://lichess.org/editor/{}" target="_blank">{}</a>'.format(fen, fen))
         if confidence > 0.95:
             f.write('<div style="color: green">{}</div>'.format(confidence))
         elif confidence > 0.8:
@@ -76,7 +83,7 @@ def predict_chessboard(chessboard_img_path, options={}):
         print("Confidence: {}".format(confidence))
     # if options.debug:
     print("https://lichess.org/editor/{}".format(predicted_fen))
-    _save_output_html(chessboard_img_path, predicted_fen, confidence)
+    _save_output_html(chessboard_img_path, predicted_fen, [p[1] for p in predictions], confidence)
     print("Saved {} prediction to debug.html".format(chessboard_img_path))
     return predicted_fen
 
