@@ -43,23 +43,47 @@ pip3 install -r requirements.txt
 
 You'll need a neural network model to use `./recognize.py`
 
-To use a pre-trained model, download [nn-model.zip](https://github.com/linrock/chessboard-recognizer/releases/download/v0.1/nn-model.zip) and unzip in the project root folder.
+To use a pre-trained model, download [nn-model.zip](https://github.com/linrock/chessboard-recognizer/releases/download/v0.4/nn-model.zip) and unzip in the project root folder.
 
-To train your own model, you'll need lots of images of chess pieces
+To train your own model, you'll first need lots of images of chessboards
 
-You can download [training-images.zip](https://github.com/linrock/chessboard-recognizer/releases/download/v0.1/training-images.zip) and unzip in the project root folder for the images used for the pre-trained model.
+* For the images used in the pre-trained model, download [training-images.zip](https://github.com/linrock/chessboard-recognizer/releases/download/v0.4/training-images.zip) and unzip in the project root directory
+* Or generate your own training images with this script:
+  * `./generate_chessboards.py` downloads a bunch of chessboard images with randomly-placed pieces
+  
+Then run this script to convert the chessboard images into 32x32 PNGs of each square of the board
+  * `./generate_tiles.py` converts these downloaded chessboard images into 32x32 PNGs used for training
 
-Or you can generate your own training images with these scripts:
-
-* `./generate_chessboards.py` downloads a bunch of chessboard images with randomly-placed pieces
-* `./generate_tiles.py` converts these downloaded chessboard images into 32x32 PNGs used for training
-* `./view_images.py` for a convenient way to manually verify the generated images
+Once you have tiles images ready for the training inputs, run this:
+  * `./train.py` creates a new neural network model
 
 Once you have a neural network model ready, run `./recognize.py` with a path to a chessboard image:
 
 `./recognize.py ~/Desktop/chessboard.png`
 
-# Acknowledgements
+
+## Debugging
+
+To verify that the generated 32x32 PNG tile images match the source chessboard image, use this script:
+  * `./view_images.py` for a convenient way to manually verify the generated images
+
+Then open `images.html` to view the chessboard and tile images with their corresponding pieces.
+
+To debug the predicted outputs, open `debug.html` after running `./recognize.py` to view the actual/predicted boards
+
+![image](https://user-images.githubusercontent.com/208617/70389743-54c50c00-19bb-11ea-8734-a663dee66392.png)
+
+Each prediction shows the actual board, the predicted board, the prediction confidence for each square, and a link to a board editor so you can edit the actual FEN in case the predicted FEN is wrong.
+
+Incorrect or low-confidence predictions are a great source of training chessboard images.
+
+For a convenient way to add a training image, use this script:
+  * `./save_chessboard.py chessboard.png <subdirectory> <actual fen>
+
+Then you can generate more tiles and re-train the model for more-accurate future predictions.
+
+
+## Acknowledgements
 
 * Original inspiration from [tensorflow_chessbot](https://github.com/Elucidation/tensorflow_chessbot) by [Elucidation](https://github.com/Elucidation)
 * Neural network architecture from https://www.tensorflow.org/tutorials/images/cnn
