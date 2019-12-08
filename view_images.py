@@ -24,7 +24,7 @@ if __name__ == '__main__':
                 CHESSBOARDS_DIR, img_dir, '{}.png'.format(img_filename_prefix)
             )
             f.write('<h3>{}</h3>'.format(chessboard_img_path))
-            f.write('<img src="{}" width="256"/>'.format(chessboard_img_path))
+            f.write('<img src="{}" class="chessboard"/>'.format(chessboard_img_path))
             f.write('<h3>{}</h3>'.format(tile_dir))
             square_map = {}
             for tile_img_path in glob(os.path.join(tile_dir, '*.png')):

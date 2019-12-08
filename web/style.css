@@ -8,7 +8,7 @@ body {
 }
 
 .empty {
-  opacity: 0.2;
+  opacity: 0;
 }
 
 .boards-row {
@@ -19,6 +19,11 @@ body {
   width: 256px;
   height: 256px;
   margin-right: 15px;
+}
+
+.chessboard {
+  width: 256px;
+  height: 256px;
 }
 
 .predictions-matrix {
