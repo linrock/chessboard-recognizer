@@ -36,12 +36,16 @@ def _chessboard_tiles_img_data(chessboard_img_path, options={}):
     return img_data_list
 
 def _confidence_color(confidence):
-    if confidence > 0.95:
-        return "green"
-    elif confidence > 0.8:
-        return "orange"
+    if confidence >= 0.999:
+        return "#00C176"
+    elif confidence > 0.99:
+        return "#88C100"
+    elif confidence > 0.95:
+        return "#FABE28"
+    elif confidence > 0.9:
+        return "#FF8A00"
     else:
-        return "red"
+        return "#FF003C"
 
 def _save_output_html(chessboard_img_path, fen, predictions, confidence):
     confidence_color = _confidence_color(confidence)
