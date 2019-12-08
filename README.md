@@ -13,7 +13,7 @@ Run the program like this
 
 To get the chessboard position in [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) notation
 
-`111rkb1r/1pp11ppp/11n1q1n1/p111Pb11/11Pp1111/PN111NB1/1P1QPPPP/111RKB1R`
+`3rkb1r/1pp2ppp/2n1q1n1/p3Pb2/2Pp4/PN3NB1/1P1QPPPP/3RKB1R`
 
 ## Sample results
 
@@ -21,14 +21,14 @@ Chess puzzle from a book:
 
 <img src="https://user-images.githubusercontent.com/208617/69923373-5437ed00-1472-11ea-9877-89503cc532ea.png" width=240 />
 
-Predicted: [11r11k1r/111111bp/p111q111/1111pp1Q/1p1n11P1/N1111111/PPP111BP/11KR1R11](https://lichess.org/analysis/standard/11r11k1r/111111bp/p111q111/1111pp1Q/1p1n11P1/N1111111/PPP111BP/11KR1R11) (99.633% confidence)
+Predicted: [2r2k1r/6bp/p3q3/4pp1Q/1p1n2P1/N7/PPP3BP/2KR1R2](https://lichess.org/analysis/standard/2r2k1r/6bp/p3q3/4pp1Q/1p1n2P1/N7/PPP3BP/2KR1R2) (99.633% confidence)
 
 Lichess analysis board diagram with arrows:
 
 <img src="https://user-images.githubusercontent.com/208617/69923935-4ab08400-1476-11ea-8a65-5e11f0145b28.png" width=240 />
 
 
-Predicted: [11111r1k/11q1r1pp/11p1111n/11P11B11/pPQ1pR11/P11111P1/1111R11P/1111111K](https://lichess.org/analysis/standard/11111r1k/11q1r1pp/11p1111n/11P11B11/pPQ1pR11/P11111P1/1111R11P/1111111K) (99.997% confidence)
+Predicted: [5r1k/2q1r1pp/2p4n/2P2B2/pPQ1pR2/P5P1/4R2P/7K](https://lichess.org/analysis/standard/5r1k/2q1r1pp/2p4n/2P2B2/pPQ1pR2/P5P1/4R2P/7K) (99.997% confidence)
 
 ## Getting started
 
@@ -78,7 +78,7 @@ Each prediction shows the actual board, the predicted board, the prediction conf
 Incorrect or low-confidence predictions are a great source of training chessboard images.
 
 For a convenient way to add a training image, use this script:
-  * `./save_chessboard.py chessboard.png <subdirectory> <actual fen>
+  * `./save_chessboard.py chessboard.png <subdirectory> <actual fen>`
 
 Then you can generate more tiles and re-train the model for more-accurate future predictions.
 
