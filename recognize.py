@@ -49,30 +49,30 @@ def _confidence_color(confidence):
 
 def _save_output_html(chessboard_img_path, fen, predictions, confidence):
     confidence_color = _confidence_color(confidence)
+    html = '<h3>{}</h3>'.format(chessboard_img_path)
+    html += '<div class="boards-row">'
+    html += '<img src="{}" />'.format(chessboard_img_path)
+    html += '<img src="http://www.fen-to-image.com/image/32/{}"/>'.format(fen)
+    html += '<div class="predictions-matrix">'
+    for i in range(8):
+        html += '<div>'
+        for j in range(8):
+            c = predictions[i*8 + j]
+            html += '<div class="prediction" style="color: {}">{}</div>'.format(
+                _confidence_color(c),
+                format(c, '.3f')
+            )
+        html += '</div>'
+    html += '</div>'
+    html += '</div>'
+    html += '<br />'
+    html += '<a href="https://lichess.org/editor/{}" target="_blank">{}</a>'.format(
+        fen, fen
+    )
+    html += '<div style="color: {}">{}</div>'.format(confidence_color, confidence)
+    html += '<br /><br />'
     with open("debug.html", "a") as f:
-        f.write('<h3>{}</h3>'.format(chessboard_img_path))
-        f.write('<div class="boards-row">')
-        f.write('<img src="{}" />'.format(chessboard_img_path))
-        f.write('<img src="http://www.fen-to-image.com/image/32/{}"/>'.format(fen))
-        f.write('<div class="predictions-matrix">')
-        for i in range(8):
-            f.write('<div>')
-            for j in range(8):
-                c = predictions[i*8 + j]
-                f.write('<div class="prediction" style="color: {}">{}</div>'.format(
-                    _confidence_color(c),
-                    format(c, '.3f')
-                ))
-            f.write('</div>')
-        f.write('</div>')
-        f.write('</div>')
-        f.write('<br />')
-        f.write('<a href="https://lichess.org/editor/{}" target="_blank">{}</a>'.format(
-            fen, fen
-        ))
-        f.write('<div style="color: {}">{}</div>'.format(confidence_color, confidence))
-        f.write('<br />')
-        f.write('<br />')
+        f.write(html)
 
 def predict_chessboard(chessboard_img_path, options={}):
     """ Given a file path to a chessboard PNG image,
