@@ -8,14 +8,7 @@ from constants import CHESSBOARDS_DIR, TILES_DIR
 
 OUT_FILE = 'images.html'
 
-if __name__ == '__main__':
-    sub_dir = sys.argv[1] if len(sys.argv) > 1 else '*'
-    tiles_base_dir = os.path.join(TILES_DIR, sub_dir, '*')
-    print('Looking for tile images in {}'.format(tiles_base_dir))
-    print('Found {} tile images'.format(
-        len(glob(os.path.join(tiles_base_dir, '*.png')))
-    ))
-    tile_dirs = glob(tiles_base_dir)
+def _save_output_html(tile_dirs):
     html = '<html lang="en">'
     html += '<link rel="stylesheet" href="./web/style.css" />'
     for tile_dir in tile_dirs:
@@ -50,4 +43,13 @@ if __name__ == '__main__':
     html += '</html>'
     with open(OUT_FILE, 'w') as f:
         f.write(html)
+
+if __name__ == '__main__':
+    sub_dir = sys.argv[1] if len(sys.argv) > 1 else '*'
+    tiles_base_dir = os.path.join(TILES_DIR, sub_dir, '*')
+    print('Looking for tile images in {}'.format(tiles_base_dir))
+    print('Found {} tile images'.format(
+        len(glob(os.path.join(tiles_base_dir, '*.png')))
+    ))
+    _save_output_html(glob(tiles_base_dir))
     print('Open {} to view all tile images'.format(OUT_FILE))

@@ -19,6 +19,8 @@ from train import image_data
 from chessboard_finder import get_chessboard_corners
 from chessboard_image import get_chessboard_tiles
 
+OUT_FILE = "debug.html"
+
 def _chessboard_tiles_img_data(chessboard_img_path, options={}):
     """ Given a file path to a chessboard PNG image, returns a
         size-64 array of 32x32 tiles representing each square of a chessboard
@@ -71,7 +73,7 @@ def _save_output_html(chessboard_img_path, fen, predictions, confidence):
     )
     html += '<div style="color: {}">{}</div>'.format(confidence_color, confidence)
     html += '<br /><br />'
-    with open("debug.html", "a") as f:
+    with open(OUT_FILE, "a") as f:
         f.write(html)
 
 def predict_chessboard(chessboard_img_path, options={}):
@@ -101,7 +103,7 @@ def predict_chessboard(chessboard_img_path, options={}):
     # if options.debug:
     print("https://lichess.org/editor/{}".format(predicted_fen))
     _save_output_html(chessboard_img_path, predicted_fen, [p[1] for p in predictions], confidence)
-    print("Saved {} prediction to debug.html".format(chessboard_img_path))
+    print("Saved {} prediction to {}".format(chessboard_img_path, OUT_FILE))
     return predicted_fen
 
 def predict_tile(tile_img_data):
@@ -131,7 +133,7 @@ if __name__ == '__main__':
     # print(tile_img_path)
     # print(predict_tile(image_data(tile_img_path)))
     if len(sys.argv) > 1:
-        with open("debug.html", "w") as f:
+        with open(OUT_FILE, "w") as f:
             f.write('<link rel="stylesheet" href="./web/style.css" />')
         for chessboard_image_path in sorted(glob(args.image_path)):
             print(predict_chessboard(chessboard_image_path, args))
