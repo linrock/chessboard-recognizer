@@ -43,7 +43,7 @@ pip3 install -r requirements.txt
 
 You'll need a neural network model to use `./recognize.py`
 
-To use a pre-trained model, download [nn-model.zip](https://github.com/linrock/chessboard-recognizer/releases/download/v0.4/nn-model.zip) and unzip in the project root folder.
+To use a pre-trained model, download [nn-model.zip](https://github.com/linrock/chessboard-recognizer/releases/download/v0.5/nn-model.zip) and unzip in the project root folder.
 
 To train your own model, you'll first need lots of images of chessboards
 
